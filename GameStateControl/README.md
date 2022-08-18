@@ -10,9 +10,6 @@
     - initializer
   - Bootstrap the game owner entity
     - because it needs to be created by a different user (e.g. system)
-- Game test harness 
-  - initializer/creator
-  - `Call` should be a property
 - Mutation
   - Multiple targets
     - e.g. so can remove health from another entity when it is my turn
