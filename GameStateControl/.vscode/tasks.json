@@ -2,6 +2,17 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "gs-push",
+            "type": "shell",
+            "windows": {
+                "command": "D:/Monxterz.StatePlatform/Monxterz.StatePlatform.Cli/bin/Debug/net6.0/gs-push.exe",
+            },
+            "osx": {
+                "command": "/Users/jfoshee/Github/Monxterz.StatePlatform/Monxterz.StatePlatform.Cli/bin/Debug/net6.0/gs-push",
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "build",
             "command": "dotnet",
             "type": "process",
