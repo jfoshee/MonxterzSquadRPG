@@ -9,9 +9,14 @@ public class AttackTest
         GameEntityState attacker = await game.Create.Character();
         GameEntityState enemy = await game.Create.Character();
 
-        await game.Call.Attack(attacker, enemy.Id);
+        await game.Call.Attack(attacker, enemy);
 
         // Enemy's hp should be reduced by the attacker's strength
-        Assert.Equal(5, game.State(enemy).hp);
+        Assert.Equal(99, game.State(enemy).hp);
     }
+
+    // TODO: Ensure in same battle
+    // TODO: Handle target(s) not passed
+    // TODO: Handle not your turn
+    // TODO: Handle not your character
 }
