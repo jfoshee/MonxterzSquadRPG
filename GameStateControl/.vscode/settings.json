@@ -1,4 +1,5 @@
 {
+    "dotnet-test-explorer.testProjectPath": "Monxterz.SquadRpg.GameState.Tests",
     "cSpell.words": [
         "monxterz",
         "Xunit"
