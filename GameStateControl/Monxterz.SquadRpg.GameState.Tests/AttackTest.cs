@@ -52,6 +52,25 @@ public class AttackTest
         Assert.Equal(0, game.State(defender).hp);
     }
 
+    [Theory(DisplayName = "Cannot Kill after Death"), RpgTest]
+    public async Task CannotKillPostDeath(IGameTestHarness game)
+    {
+        GameEntityState attacker = await game.Create.Character();
+        GameEntityState defender = await game.Create.Character();
+        // Initialize attacker strength & defender hp
+        game.State(attacker).hp = 0;
+        game.State(attacker).strength = 20;
+        game.State(defender).hp = 25;
+
+        await game.Invoking(async g => await (Task)g.Call.Attack(attacker, defender))
+                  .Should()
+                  .ThrowAsync<ApiException>()
+                  .WithMessage("*cannot attack*dead*");
+
+        // Enemy's hp not should be reduced 
+        Assert.Equal(25, game.State(defender).hp);
+    }
+
     // TODO: Handle not your character
     // TODO: Ensure in same battle
     // TODO: Handle not your turn

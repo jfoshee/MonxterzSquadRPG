@@ -5,6 +5,9 @@ export function mutate(context) {
   }
   const attacker = context.entities[0].customStatePublic[context.authorId];
   const defender = context.entities[1].customStatePublic[context.authorId];
+  if (attacker.hp <= 0) {
+    throw Error('The character cannot attack when dead.');
+  }
   defender.hp -= attacker.strength;
   if (defender.hp < 0) {
     defender.hp = 0;
