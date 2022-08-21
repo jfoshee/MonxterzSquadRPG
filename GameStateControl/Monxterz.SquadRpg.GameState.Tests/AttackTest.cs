@@ -2,7 +2,7 @@ namespace Monxterz.SquadRpg.GameState.Tests;
 
 public class AttackTest
 {
-    [Theory, GameTest("monxterz-squad-rpg")]
+    [Theory(DisplayName = "Basic"), RpgTest]
     public async Task BasicAttack(IGameTestHarness game)
     {
         GameEntityState attacker = await game.Create.Character();

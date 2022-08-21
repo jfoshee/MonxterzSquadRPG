@@ -2,7 +2,7 @@ namespace Monxterz.SquadRpg.GameState.Tests;
 
 public class CharacterTest
 {
-    [Theory, GameTest("monxterz-squad-rpg")]
+    [Theory(DisplayName = "Default"), RpgTest]
     public async Task DefaultCharacter(IGameTestHarness game)
     {
         GameEntityState character = await game.Create.Character();
