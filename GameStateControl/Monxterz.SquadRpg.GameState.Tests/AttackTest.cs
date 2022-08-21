@@ -17,9 +17,42 @@ public class AttackTest
         Assert.Equal(4, game.State(defender).hp);
     }
 
-    // TODO: Ensure in same battle
-    // TODO: Handle target(s) not passed
-    // TODO: Handle not your turn
+    [Theory(DisplayName = "Missing Attacked & Defender"), RpgTest]
+    public async Task MissingAttacker(IGameTestHarness game)
+    {
+        await game.Invoking(async g => await (Task)g.Call.Attack())
+                  .Should()
+                  .ThrowAsync<ApiException>()
+                  .WithMessage("*attacker*");
+    }
+
+    [Theory(DisplayName = "Missing Defender"), RpgTest]
+    public async Task MissingDefender(IGameTestHarness game)
+    {
+        GameEntityState attacker = await game.Create.Character();
+
+        await game.Invoking(async g => await (Task)g.Call.Attack(attacker))
+                  .Should()
+                  .ThrowAsync<ApiException>()
+                  .WithMessage("*defender*");
+    }
+
+    [Theory(DisplayName = "Kill"), RpgTest]
+    public async Task Kill(IGameTestHarness game)
+    {
+        GameEntityState attacker = await game.Create.Character();
+        GameEntityState defender = await game.Create.Character();
+        // Initialize attacker strength & defender hp
+        game.State(attacker).strength = 20;
+        game.State(defender).hp = 17;
+
+        await game.Call.Attack(attacker, defender);
+
+        // Enemy's hp should be reduced by the attacker's strength
+        Assert.Equal(0, game.State(defender).hp);
+    }
+
     // TODO: Handle not your character
-    // TODO: Handle if character killed
+    // TODO: Ensure in same battle
+    // TODO: Handle not your turn
 }
