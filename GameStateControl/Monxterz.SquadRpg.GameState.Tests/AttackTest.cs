@@ -71,7 +71,19 @@ public class AttackTest
         Assert.Equal(25, game.State(defender).hp);
     }
 
-    // TODO: Handle not your character
+    [Theory(DisplayName = "Cannot attack w/ another player's character"), RpgTest]
+    public async Task AnotherPlayersCharacter(IGameTestHarness game)
+    {
+        GameEntityState attacker = await game.Create.Character();
+        GameEntityState defender = await game.Create.Character();
+        await game.NewCurrentPlayer();
+
+        await game.Invoking(async g => await (Task)g.Call.Attack(attacker, defender))
+                  .Should()
+                  .ThrowAsync<ApiException>()
+                  .WithMessage("*cannot attack*player*");
+    }
+
     // TODO: Ensure in same battle
     // TODO: Handle not your turn
 }
