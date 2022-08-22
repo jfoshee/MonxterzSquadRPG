@@ -22,13 +22,18 @@ public class MainViewModel : ObservableObject
         });
         gameStateClient.GetEntitiesNearbyAsync().ContinueWith(task =>
         {
-            var entities = task.Result;
-            EntityNames = entities.Where(IsCharacter)
-                                  .Select(e => e.DisplayName ?? e.Id)
-                                  .ToList();
+            allNearbyCharacters = task.Result.Where(IsCharacter).ToList();
+            EnemyNames = allNearbyCharacters.Select(DisplayName).ToList();
         });
-        //EntityNames = Enumerable.Repeat("Test", 100).ToList();
+        gameStateClient.GetEntitiesOwnedAsync().ContinueWith(task =>
+        {
+            ownedCharacters = task.Result.Where(IsCharacter).ToList();
+            FriendlyNames = ownedCharacters.Select(DisplayName).ToList();
+        });
     }
+
+    private List<GameEntityState> allNearbyCharacters = new();
+    private List<GameEntityState> ownedCharacters = new();
 
     private string greetingText = "Hello, World...";
     public string GreetingText
@@ -37,16 +42,28 @@ public class MainViewModel : ObservableObject
         set => SetProperty(ref greetingText, value);
     }
 
-    private List<string> entityNames = new();
-    public List<string> EntityNames
+    private List<string> friendlyNames = new();
+    public List<string> FriendlyNames
     {
-        get => entityNames;
-        set => SetProperty(ref entityNames, value);
+        get => friendlyNames;
+        set => SetProperty(ref friendlyNames, value);
+    }
+
+    private List<string> enemyNames = new();
+    public List<string> EnemyNames
+    {
+        get => enemyNames;
+        set => SetProperty(ref enemyNames, value);
     }
 
     private bool IsCharacter(GameEntityState entity)
     {
         var type = entity.GetPublicValue<string>("monxterz-squad-rpg", "type");
         return type == "Character";
+    }
+
+    private string DisplayName(GameEntityState entity)
+    {
+        return $"{entity.DisplayName} ({entity.Id})  Owner: {entity.SystemState.OwnerId}";
     }
 }

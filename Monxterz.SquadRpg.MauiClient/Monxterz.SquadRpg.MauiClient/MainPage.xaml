@@ -4,12 +4,12 @@
              x:Class="Monxterz.SquadRpg.MauiClient.MainPage">
     <HorizontalStackLayout Margin="10">
         <StackLayout>
-            <Label>Characters</Label>
-            <ListView ItemsSource="{Binding EntityNames}" />
+            <Label>My Characters</Label>
+            <ListView ItemsSource="{Binding FriendlyNames}" />
         </StackLayout>
         <StackLayout>
-            <Label>Characters</Label>
-            <ListView ItemsSource="{Binding EntityNames}" />
+            <Label>Enemies</Label>
+            <ListView ItemsSource="{Binding EnemyNames}" />
         </StackLayout>
     </HorizontalStackLayout>
 </ContentPage>
