@@ -50,9 +50,13 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Reference Include="Monxterz.StatePlatform.Client">
+	    <HintPath>..\..\..\Monxterz.StatePlatform\Monxterz.StatePlatform.ClientServices\bin\Debug\netstandard2.1\Monxterz.StatePlatform.Client.dll</HintPath>
+	  </Reference>
 	  <Reference Include="Monxterz.StatePlatform.ClientServices">
 	    <HintPath>..\..\..\Monxterz.StatePlatform\Monxterz.StatePlatform.ClientServices\bin\Debug\netstandard2.1\Monxterz.StatePlatform.ClientServices.dll</HintPath>
 	  </Reference>

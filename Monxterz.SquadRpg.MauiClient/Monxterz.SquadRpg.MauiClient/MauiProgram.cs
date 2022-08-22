@@ -12,8 +12,9 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
-		builder.Services.AddTransient<AppShell>()
-						.AddTransient<MainPage>();
+		builder.Services.AddSingleton<AppShell>()
+						.AddTransient<MainPage>()
+						.AddGameStateClientServices("monxterz-squad-rpg", "https://localhost:7264");
 		return builder.Build();
 	}
 }
