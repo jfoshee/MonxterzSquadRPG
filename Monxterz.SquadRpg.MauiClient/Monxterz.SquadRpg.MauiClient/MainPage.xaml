@@ -7,6 +7,9 @@
             <Button Text="Attack"
                     Command="{Binding AttackCommand}"/>
             <ActivityIndicator IsRunning="{Binding Path=AttackCommand.IsRunning}"/>
+            <Label Text="{Binding Path=SelectedEnemy.DisplayName}" Margin="10,0"/>
+            <Label Text="{Binding Path=SelectedEnemy.Id}" Margin="10,0"/>
+            <Label Text="{Binding Path=SelectedEnemy.Hp}" Margin="10,0"/>
         </HorizontalStackLayout>
         <HorizontalStackLayout Margin="10">
             <StackLayout>
@@ -15,7 +18,28 @@
             </StackLayout>
             <StackLayout>
                 <Label>Enemies</Label>
-                <ListView ItemsSource="{Binding EnemyNames}" />
+                <ListView ItemsSource="{Binding Enemies}"
+                          SelectedItem="{Binding SelectedEnemy, Mode=OneWayToSource}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding DisplayName}" Grid.Column="0"/>
+                                    <Label Text="{Binding Id}" Grid.Column="1" Margin="10,0"/>
+                                    <Label Text="{Binding Hp}" Grid.Row="1" Grid.Column="1"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </StackLayout>
         </HorizontalStackLayout>
     </VerticalStackLayout>

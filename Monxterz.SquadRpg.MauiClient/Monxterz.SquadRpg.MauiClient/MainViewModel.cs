@@ -62,20 +62,35 @@ public class MainViewModel : ObservableObject
         set => SetProperty(ref friendlyNames, value);
     }
 
-    private List<string> enemyNames = new();
-    public List<string> EnemyNames
+    private List<CharacterViewModel> enemies = new();
+    public List<CharacterViewModel> Enemies
     {
-        get => enemyNames;
-        set => SetProperty(ref enemyNames, value);
+        get => enemies;
+        set => SetProperty(ref enemies, value);
+    }
+
+    private GameEntityState selectedFriendly;
+    public GameEntityState SelectedFriendly
+    {
+        get => selectedFriendly;
+        set => SetProperty(ref selectedFriendly, value);
+    }
+
+    private CharacterViewModel selectedEnemy;
+    public CharacterViewModel SelectedEnemy
+    {
+        get => selectedEnemy;
+        set => SetProperty(ref selectedEnemy, value);
     }
 
     private async Task Attack()
     {
         var selectedFriendly = ownedCharacters.First();
-        var selectedEnemy = enemyCharacters.First();
-        await game.Call.Attack(selectedFriendly, selectedEnemy);
+        await game.Call.Attack(selectedFriendly, SelectedEnemy.Entity);
         // HACK: Refresh enemies
-        EnemyNames = enemyCharacters.Select(DisplayName).ToList();
+        SelectedEnemy = new CharacterViewModel(SelectedEnemy.Entity);
+        Enemies = enemyCharacters.Select(e => new CharacterViewModel(e)).ToList();
+
     }
 
     private void UpdateOwnedCharacters()
@@ -94,7 +109,7 @@ public class MainViewModel : ObservableObject
         {
             var userId = user.Id;
             enemyCharacters = allNearbyCharacters.Where(e => e.SystemState.OwnerId != userId).ToList();
-            EnemyNames = enemyCharacters.Select(DisplayName).ToList();
+            Enemies = enemyCharacters.Select(e => new CharacterViewModel(e)).ToList();
         }
     }
 
