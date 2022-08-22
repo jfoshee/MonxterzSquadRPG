@@ -17,25 +17,25 @@ public class MainViewModel : ObservableObject
         var getUserTask = gameStateClient.GetUserAsync();
         getUserTask.ContinueWith(task =>
         {
-            var user = task.Result;
+            user = task.Result;
             GreetingText = $"Hello, {user.DisplayName}!";
+            UpdateOwnedCharacters();
+            UpdateEnemyCharacters();
         });
         gameStateClient.GetEntitiesNearbyAsync().ContinueWith(task =>
         {
             allNearbyCharacters = task.Result.Where(IsCharacter).ToList();
-            EnemyNames = allNearbyCharacters.Select(DisplayName).ToList();
-        });
-        gameStateClient.GetEntitiesOwnedAsync().ContinueWith(task =>
-        {
-            ownedCharacters = task.Result.Where(IsCharacter).ToList();
-            FriendlyNames = ownedCharacters.Select(DisplayName).ToList();
+            UpdateOwnedCharacters();
+            UpdateEnemyCharacters();
         });
     }
 
+    private GameEntityState user;
     private List<GameEntityState> allNearbyCharacters = new();
     private List<GameEntityState> ownedCharacters = new();
 
     private string greetingText = "Hello, World...";
+
     public string GreetingText
     {
         get => greetingText;
@@ -54,6 +54,26 @@ public class MainViewModel : ObservableObject
     {
         get => enemyNames;
         set => SetProperty(ref enemyNames, value);
+    }
+
+    private void UpdateOwnedCharacters()
+    {
+        if (user is not null && allNearbyCharacters.Any())
+        {
+            var userId = user.Id;
+            ownedCharacters = allNearbyCharacters.Where(e => e.SystemState.OwnerId == userId).ToList();
+            FriendlyNames = ownedCharacters.Select(DisplayName).ToList();
+        }
+    }
+
+    private void UpdateEnemyCharacters()
+    {
+        if (user is not null && allNearbyCharacters.Any())
+        {
+            var userId = user.Id;
+            var nonOwnedCharacters = allNearbyCharacters.Where(e => e.SystemState.OwnerId != userId).ToList();
+            EnemyNames = nonOwnedCharacters.Select(DisplayName).ToList();
+        }
     }
 
     private bool IsCharacter(GameEntityState entity)
