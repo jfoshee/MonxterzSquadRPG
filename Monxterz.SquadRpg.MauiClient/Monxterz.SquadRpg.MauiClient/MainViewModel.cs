@@ -1,14 +1,31 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Monxterz.StatePlatform.Client;
 using System.Windows.Input;
 
 namespace Monxterz.SquadRpg.MauiClient;
 
 public class MainViewModel : ObservableObject
 {
-    public MainViewModel()
+    private readonly IGameStateClient gameStateClient;
+
+    public MainViewModel(IGameStateClient gameStateClient)
     {
         IncrementCounterCommand = new RelayCommand(IncrementCounter);
+        this.gameStateClient = gameStateClient;
+        var getUserTask = gameStateClient.GetUserAsync();
+        getUserTask.ContinueWith(t =>
+        {
+            var user = t.Result;
+            GreetingText = $"Hello, {user.DisplayName}!";
+        });
+    }
+
+    private string greetingText = "Hello, World...";
+    public string GreetingText
+    {
+        get => greetingText;
+        set => SetProperty(ref greetingText, value);
     }
 
     private int counter;

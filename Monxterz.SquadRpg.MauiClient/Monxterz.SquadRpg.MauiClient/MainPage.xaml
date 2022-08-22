@@ -16,8 +16,7 @@
                 HorizontalOptions="Center" />
 
             <Label
-                x:Name="GreetingLabel"
-                Text="Hello, World!"
+                Text="{Binding GreetingText}"
                 SemanticProperties.HeadingLevel="Level1"
                 FontSize="32"
                 HorizontalOptions="Center" />
