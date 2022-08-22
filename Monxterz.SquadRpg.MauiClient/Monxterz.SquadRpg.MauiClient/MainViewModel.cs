@@ -12,10 +12,13 @@ namespace Monxterz.SquadRpg.MauiClient;
 public class MainViewModel : ObservableObject
 {
     private readonly IGameStateClient gameStateClient;
+    private readonly IGameTestHarness game;
 
-    public MainViewModel(IGameStateClient gameStateClient)
+    public MainViewModel(IGameStateClient gameStateClient, IGameTestHarness game)
     {
         this.gameStateClient = gameStateClient;
+        this.game = game;
+        AttackCommand = new AsyncRelayCommand(Attack);
     }
 
     public void Load()
@@ -41,9 +44,11 @@ public class MainViewModel : ObservableObject
     private GameEntityState user;
     private List<GameEntityState> allNearbyCharacters = new();
     private List<GameEntityState> ownedCharacters = new();
+    private List<GameEntityState> enemyCharacters = new();
+
+    public IAsyncRelayCommand AttackCommand { get; }
 
     private string greetingText = "Hello, World...";
-
     public string GreetingText
     {
         get => greetingText;
@@ -64,6 +69,15 @@ public class MainViewModel : ObservableObject
         set => SetProperty(ref enemyNames, value);
     }
 
+    private async Task Attack()
+    {
+        var selectedFriendly = ownedCharacters.First();
+        var selectedEnemy = enemyCharacters.First();
+        await game.Call.Attack(selectedFriendly, selectedEnemy);
+        // HACK: Refresh enemies
+        EnemyNames = enemyCharacters.Select(DisplayName).ToList();
+    }
+
     private void UpdateOwnedCharacters()
     {
         if (user is not null && allNearbyCharacters.Any())
@@ -79,8 +93,8 @@ public class MainViewModel : ObservableObject
         if (user is not null && allNearbyCharacters.Any())
         {
             var userId = user.Id;
-            var nonOwnedCharacters = allNearbyCharacters.Where(e => e.SystemState.OwnerId != userId).ToList();
-            EnemyNames = nonOwnedCharacters.Select(DisplayName).ToList();
+            enemyCharacters = allNearbyCharacters.Where(e => e.SystemState.OwnerId != userId).ToList();
+            EnemyNames = enemyCharacters.Select(DisplayName).ToList();
         }
     }
 
