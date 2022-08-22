@@ -2,6 +2,25 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Monxterz.SquadRpg.MauiClient.MainPage">
+    <ContentPage.Resources>
+        <DataTemplate x:Key="CharacterTemplate">
+            <ViewCell>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Text="{Binding DisplayName}" Grid.Column="0"/>
+                    <Label Text="{Binding Id}" Grid.Column="1" Margin="10,0"/>
+                    <Label Text="{Binding Stats}" Grid.Row="1" Grid.Column="1"/>
+                </Grid>
+            </ViewCell>
+        </DataTemplate>
+    </ContentPage.Resources>
     <VerticalStackLayout Margin="10">
         <HorizontalStackLayout>
             <Button Text="Attack"
@@ -9,37 +28,20 @@
             <ActivityIndicator IsRunning="{Binding Path=AttackCommand.IsRunning}"/>
             <Label Text="{Binding Path=SelectedEnemy.DisplayName}" Margin="10,0"/>
             <Label Text="{Binding Path=SelectedEnemy.Id}" Margin="10,0"/>
-            <Label Text="{Binding Path=SelectedEnemy.Hp}" Margin="10,0"/>
+            <Label Text="{Binding Path=SelectedEnemy.Stats}" Margin="10,0"/>
         </HorizontalStackLayout>
         <HorizontalStackLayout Margin="10">
             <StackLayout>
                 <Label>My Characters</Label>
-                <ListView ItemsSource="{Binding FriendlyNames}" />
+                <ListView ItemsSource="{Binding Friendlies}"
+                          SelectedItem="{Binding SelectedFriendly, Mode=OneWayToSource}"
+                          ItemTemplate="{StaticResource CharacterTemplate}" />
             </StackLayout>
             <StackLayout>
                 <Label>Enemies</Label>
                 <ListView ItemsSource="{Binding Enemies}"
-                          SelectedItem="{Binding SelectedEnemy, Mode=OneWayToSource}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <Label Text="{Binding DisplayName}" Grid.Column="0"/>
-                                    <Label Text="{Binding Id}" Grid.Column="1" Margin="10,0"/>
-                                    <Label Text="{Binding Hp}" Grid.Row="1" Grid.Column="1"/>
-                                </Grid>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                          SelectedItem="{Binding SelectedEnemy, Mode=OneWayToSource}"
+                          ItemTemplate="{StaticResource CharacterTemplate}" />
             </StackLayout>
         </HorizontalStackLayout>
     </VerticalStackLayout>

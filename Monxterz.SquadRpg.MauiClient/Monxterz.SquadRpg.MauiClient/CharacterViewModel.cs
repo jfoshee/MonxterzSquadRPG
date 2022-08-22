@@ -17,5 +17,5 @@ public class CharacterViewModel
     public string DisplayName => Entity.DisplayName;
     public int Hp => Entity.GetPublicValue<int>(GameMasterId, "hp");
     public int Strength => Entity.GetPublicValue<int>(GameMasterId, "strength");
-
+    public string Stats => $"Strength: {Strength}  HP: {Hp}";
 }

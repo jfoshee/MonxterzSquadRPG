@@ -55,11 +55,11 @@ public class MainViewModel : ObservableObject
         set => SetProperty(ref greetingText, value);
     }
 
-    private List<string> friendlyNames = new();
-    public List<string> FriendlyNames
+    private List<CharacterViewModel> friendlies = new();
+    public List<CharacterViewModel> Friendlies
     {
-        get => friendlyNames;
-        set => SetProperty(ref friendlyNames, value);
+        get => friendlies;
+        set => SetProperty(ref friendlies, value);
     }
 
     private List<CharacterViewModel> enemies = new();
@@ -69,8 +69,8 @@ public class MainViewModel : ObservableObject
         set => SetProperty(ref enemies, value);
     }
 
-    private GameEntityState selectedFriendly;
-    public GameEntityState SelectedFriendly
+    private CharacterViewModel selectedFriendly;
+    public CharacterViewModel SelectedFriendly
     {
         get => selectedFriendly;
         set => SetProperty(ref selectedFriendly, value);
@@ -85,12 +85,10 @@ public class MainViewModel : ObservableObject
 
     private async Task Attack()
     {
-        var selectedFriendly = ownedCharacters.First();
-        await game.Call.Attack(selectedFriendly, SelectedEnemy.Entity);
+        await game.Call.Attack(selectedFriendly.Entity, SelectedEnemy.Entity);
         // HACK: Refresh enemies
         SelectedEnemy = new CharacterViewModel(SelectedEnemy.Entity);
         Enemies = enemyCharacters.Select(e => new CharacterViewModel(e)).ToList();
-
     }
 
     private void UpdateOwnedCharacters()
@@ -99,7 +97,7 @@ public class MainViewModel : ObservableObject
         {
             var userId = user.Id;
             ownedCharacters = allNearbyCharacters.Where(e => e.SystemState.OwnerId == userId).ToList();
-            FriendlyNames = ownedCharacters.Select(DisplayName).ToList();
+            Friendlies = ownedCharacters.Select(e => new CharacterViewModel(e)).ToList();
         }
     }
 
@@ -117,11 +115,5 @@ public class MainViewModel : ObservableObject
     {
         var type = entity.GetPublicValue<string>(GameMasterId, "type");
         return type == "Character";
-    }
-
-    private string DisplayName(GameEntityState entity)
-    {
-        var hp = entity.GetPublicValue<int>(GameMasterId, "hp");
-        return $"{entity.DisplayName} ({entity.Id})  HP: {hp}  Owner: {entity.SystemState.OwnerId}";
     }
 }
