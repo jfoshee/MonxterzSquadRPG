@@ -2,6 +2,8 @@
 
 public static class MauiProgram
 {
+	public const string GameMasterId = "monxterz-squad-rpg";
+
 	public static MauiApp CreateMauiApp()
 	{
 		var builder = MauiApp.CreateBuilder();
@@ -15,7 +17,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton<AppShell>()
 						.AddTransient<MainPage>()
 						.AddTransient<MainViewModel>()
-						.AddGameStateClientServices("monxterz-squad-rpg", "https://localhost:7264");
+						.AddGameStateClientServices(GameMasterId, "https://localhost:7264");
 		return builder.Build();
 	}
 }

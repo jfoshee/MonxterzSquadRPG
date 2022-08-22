@@ -4,6 +4,7 @@ using Monxterz.StatePlatform;
 using Monxterz.StatePlatform.Client;
 using Monxterz.StatePlatform.ClientServices;
 using System.Windows.Input;
+using static Monxterz.SquadRpg.MauiClient.MauiProgram;
 
 namespace Monxterz.SquadRpg.MauiClient;
 
@@ -78,12 +79,13 @@ public class MainViewModel : ObservableObject
 
     private bool IsCharacter(GameEntityState entity)
     {
-        var type = entity.GetPublicValue<string>("monxterz-squad-rpg", "type");
+        var type = entity.GetPublicValue<string>(GameMasterId, "type");
         return type == "Character";
     }
 
     private string DisplayName(GameEntityState entity)
     {
-        return $"{entity.DisplayName} ({entity.Id})  Owner: {entity.SystemState.OwnerId}";
+        var hp = entity.GetPublicValue<int>(GameMasterId, "hp");
+        return $"{entity.DisplayName} ({entity.Id})  HP: {hp}  Owner: {entity.SystemState.OwnerId}";
     }
 }
