@@ -14,10 +14,16 @@ public class MainViewModel : ObservableObject
         IncrementCounterCommand = new RelayCommand(IncrementCounter);
         this.gameStateClient = gameStateClient;
         var getUserTask = gameStateClient.GetUserAsync();
-        getUserTask.ContinueWith(t =>
+        getUserTask.ContinueWith(task =>
         {
-            var user = t.Result;
+            var user = task.Result;
             GreetingText = $"Hello, {user.DisplayName}!";
+        });
+        gameStateClient.GetEntitiesNearbyAsync().ContinueWith(task =>
+        {
+            var entities = task.Result;
+            EntityNames = entities.Select(e => e.DisplayName ?? e.Id)
+                                  .ToList();
         });
     }
 
@@ -26,6 +32,13 @@ public class MainViewModel : ObservableObject
     {
         get => greetingText;
         set => SetProperty(ref greetingText, value);
+    }
+
+    private List<string> entityNames = new();
+    public List<string> EntityNames
+    {
+        get => entityNames;
+        set => SetProperty(ref entityNames, value);
     }
 
     private int counter;
