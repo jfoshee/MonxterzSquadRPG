@@ -13,7 +13,6 @@ public class MainViewModel : ObservableObject
 
     public MainViewModel(IGameStateClient gameStateClient)
     {
-        IncrementCounterCommand = new RelayCommand(IncrementCounter);
         this.gameStateClient = gameStateClient;
         var getUserTask = gameStateClient.GetUserAsync();
         getUserTask.ContinueWith(task =>
@@ -28,12 +27,7 @@ public class MainViewModel : ObservableObject
                                   .Select(e => e.DisplayName ?? e.Id)
                                   .ToList();
         });
-    }
-
-    private bool IsCharacter(GameEntityState entity)
-    {
-        var type = entity.GetPublicValue<string>("monxterz-squad-rpg", "type");
-        return type == "Character";
+        //EntityNames = Enumerable.Repeat("Test", 100).ToList();
     }
 
     private string greetingText = "Hello, World...";
@@ -50,25 +44,9 @@ public class MainViewModel : ObservableObject
         set => SetProperty(ref entityNames, value);
     }
 
-    private int counter;
-    public int Counter
+    private bool IsCharacter(GameEntityState entity)
     {
-        get => counter;
-        private set => SetProperty(ref counter, value);
-    }
-
-    public ICommand IncrementCounterCommand { get; }
-
-    private void IncrementCounter()
-    {
-        Counter++;
-        ButtonText = $"Clicked {Counter} times";
-    }
-
-    private string buttonText = "Click Me";
-    public string ButtonText
-    {
-        get => buttonText;
-        set => SetProperty(ref buttonText, value);
+        var type = entity.GetPublicValue<string>("monxterz-squad-rpg", "type");
+        return type == "Character";
     }
 }

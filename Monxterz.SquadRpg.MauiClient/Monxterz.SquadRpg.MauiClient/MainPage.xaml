@@ -2,30 +2,14 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Monxterz.SquadRpg.MauiClient.MainPage">
-
-    <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
-
-            <Label
-                Text="{Binding GreetingText}"
-                SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
-                HorizontalOptions="Center" />
-
-            <ListView
-                ItemsSource="{Binding EntityNames}" />
-
-            <Button
-                x:Name="CounterBtn"
-                Text="{Binding ButtonText}"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Command="{Binding IncrementCounterCommand}"
-                HorizontalOptions="Center" />
-
-        </VerticalStackLayout>
-    </ScrollView>
-
+    <HorizontalStackLayout Margin="10">
+        <StackLayout>
+            <Label>Characters</Label>
+            <ListView ItemsSource="{Binding EntityNames}" />
+        </StackLayout>
+        <StackLayout>
+            <Label>Characters</Label>
+            <ListView ItemsSource="{Binding EntityNames}" />
+        </StackLayout>
+    </HorizontalStackLayout>
 </ContentPage>
