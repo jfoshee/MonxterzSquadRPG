@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Monxterz.StatePlatform;
 using Monxterz.StatePlatform.Client;
+using Monxterz.StatePlatform.ClientServices;
 using System.Windows.Input;
 
 namespace Monxterz.SquadRpg.MauiClient;
@@ -22,9 +24,16 @@ public class MainViewModel : ObservableObject
         gameStateClient.GetEntitiesNearbyAsync().ContinueWith(task =>
         {
             var entities = task.Result;
-            EntityNames = entities.Select(e => e.DisplayName ?? e.Id)
+            EntityNames = entities.Where(IsCharacter)
+                                  .Select(e => e.DisplayName ?? e.Id)
                                   .ToList();
         });
+    }
+
+    private bool IsCharacter(GameEntityState entity)
+    {
+        var type = entity.GetPublicValue<string>("monxterz-squad-rpg", "type");
+        return type == "Character";
     }
 
     private string greetingText = "Hello, World...";
