@@ -14,6 +14,7 @@ public static class MauiProgram
 			});
 		builder.Services.AddSingleton<AppShell>()
 						.AddTransient<MainPage>()
+						.AddTransient<MainViewModel>()
 						.AddGameStateClientServices("monxterz-squad-rpg", "https://localhost:7264");
 		return builder.Build();
 	}
