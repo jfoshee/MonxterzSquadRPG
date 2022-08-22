@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Monxterz.StatePlatform;
 using Monxterz.StatePlatform.Client;
 using Monxterz.StatePlatform.ClientServices;
+using System.Diagnostics;
 using System.Windows.Input;
 using static Monxterz.SquadRpg.MauiClient.MauiProgram;
 
@@ -15,6 +16,10 @@ public class MainViewModel : ObservableObject
     public MainViewModel(IGameStateClient gameStateClient)
     {
         this.gameStateClient = gameStateClient;
+    }
+
+    public void Load()
+    {
         var getUserTask = gameStateClient.GetUserAsync();
         getUserTask.ContinueWith(task =>
         {
@@ -22,12 +27,14 @@ public class MainViewModel : ObservableObject
             GreetingText = $"Hello, {user.DisplayName}!";
             UpdateOwnedCharacters();
             UpdateEnemyCharacters();
+            Trace.WriteLine("Set User");
         });
         gameStateClient.GetEntitiesNearbyAsync().ContinueWith(task =>
         {
             allNearbyCharacters = task.Result.Where(IsCharacter).ToList();
             UpdateOwnedCharacters();
             UpdateEnemyCharacters();
+            Trace.WriteLine("Set allNearbyCharacters");
         });
     }
 
