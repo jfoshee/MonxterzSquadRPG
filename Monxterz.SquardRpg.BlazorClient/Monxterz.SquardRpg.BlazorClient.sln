@@ -5,6 +5,8 @@ VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monxterz.SquardRpg.BlazorClient", "Monxterz.SquardRpg.BlazorClient\Monxterz.SquardRpg.BlazorClient.csproj", "{A30579B0-D3D8-4D0E-A166-A53F1BA90BC7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monxterz.SquadRpg.GameClient", "Monxterz.SquadRpg.GameClient\Monxterz.SquadRpg.GameClient.csproj", "{CEE7FA95-D6D4-4F88-8D7E-8BD6A1449E47}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A30579B0-D3D8-4D0E-A166-A53F1BA90BC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A30579B0-D3D8-4D0E-A166-A53F1BA90BC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A30579B0-D3D8-4D0E-A166-A53F1BA90BC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEE7FA95-D6D4-4F88-8D7E-8BD6A1449E47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEE7FA95-D6D4-4F88-8D7E-8BD6A1449E47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEE7FA95-D6D4-4F88-8D7E-8BD6A1449E47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEE7FA95-D6D4-4F88-8D7E-8BD6A1449E47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
