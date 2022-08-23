@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "Monxterz.SquardRpg.BlazorClient": {
+    "Monxterz.SquadRpg.BlazorClient": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

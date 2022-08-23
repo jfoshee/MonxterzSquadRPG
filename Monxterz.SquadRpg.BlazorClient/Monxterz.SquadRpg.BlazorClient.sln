@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monxterz.SquardRpg.BlazorClient", "Monxterz.SquardRpg.BlazorClient\Monxterz.SquardRpg.BlazorClient.csproj", "{A30579B0-D3D8-4D0E-A166-A53F1BA90BC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monxterz.SquadRpg.BlazorClient", "Monxterz.SquadRpg.BlazorClient\Monxterz.SquadRpg.BlazorClient.csproj", "{A30579B0-D3D8-4D0E-A166-A53F1BA90BC7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monxterz.SquadRpg.GameClient", "Monxterz.SquadRpg.GameClient\Monxterz.SquadRpg.GameClient.csproj", "{CEE7FA95-D6D4-4F88-8D7E-8BD6A1449E47}"
 EndProject
