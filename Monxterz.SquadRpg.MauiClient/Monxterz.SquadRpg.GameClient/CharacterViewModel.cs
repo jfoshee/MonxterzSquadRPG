@@ -1,8 +1,8 @@
 ﻿using Monxterz.StatePlatform;
 using Monxterz.StatePlatform.Client;
-using static Monxterz.SquadRpg.MauiClient.MauiProgram;
+using static Monxterz.SquadRpg.GameClient.Constants;
 
-namespace Monxterz.SquadRpg.MauiClient;
+namespace Monxterz.SquadRpg.GameClient;
 
 public class CharacterViewModel
 {

@@ -55,6 +55,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Monxterz.SquadRpg.GameClient\Monxterz.SquadRpg.GameClient.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Reference Include="Monxterz.StatePlatform.Client">
 	    <HintPath>..\..\..\Monxterz.StatePlatform\Monxterz.StatePlatform.ClientServices\bin\Debug\netstandard2.1\Monxterz.StatePlatform.Client.dll</HintPath>
 	  </Reference>

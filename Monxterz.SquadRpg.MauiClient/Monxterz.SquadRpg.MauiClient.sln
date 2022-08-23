@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monxterz.SquadRpg.MauiClient", "Monxterz.SquadRpg.MauiClient\Monxterz.SquadRpg.MauiClient.csproj", "{1C1148F5-505B-4D64-9A66-8A439F965424}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monxterz.SquadRpg.GameClient", "Monxterz.SquadRpg.GameClient\Monxterz.SquadRpg.GameClient.csproj", "{72991E15-5552-41C3-BDDA-8BEDE8FD788E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +19,10 @@ Global
 		{1C1148F5-505B-4D64-9A66-8A439F965424}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C1148F5-505B-4D64-9A66-8A439F965424}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1C1148F5-505B-4D64-9A66-8A439F965424}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{72991E15-5552-41C3-BDDA-8BEDE8FD788E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72991E15-5552-41C3-BDDA-8BEDE8FD788E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72991E15-5552-41C3-BDDA-8BEDE8FD788E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72991E15-5552-41C3-BDDA-8BEDE8FD788E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

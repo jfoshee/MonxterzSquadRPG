@@ -1,11 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Monxterz.SquadRpg.GameClient;
 using Monxterz.StatePlatform;
 using Monxterz.StatePlatform.Client;
 using Monxterz.StatePlatform.ClientServices;
 using System.Diagnostics;
 using System.Windows.Input;
-using static Monxterz.SquadRpg.MauiClient.MauiProgram;
+using static Monxterz.SquadRpg.GameClient.BattleClient;
 
 namespace Monxterz.SquadRpg.MauiClient;
 
@@ -109,11 +110,5 @@ public class MainViewModel : ObservableObject
             enemyCharacters = allNearbyCharacters.Where(e => e.SystemState.OwnerId != userId).ToList();
             Enemies = enemyCharacters.Select(e => new CharacterViewModel(e)).ToList();
         }
-    }
-
-    private bool IsCharacter(GameEntityState entity)
-    {
-        var type = entity.GetPublicValue<string>(GameMasterId, "type");
-        return type == "Character";
     }
 }
