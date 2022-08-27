@@ -1,22 +1,63 @@
 ﻿@page "/"
 @inject IChangeUserService changeUserService;
 @inject IGameStateClient gameStateClient;
+@inject IGameTestHarness game;
 
 <PageTitle>Monxterz Squad RPG</PageTitle>
 
 <h1>Hello, @userName!</h1>
 
-Welcome to your new app.
+<div class="container">
+    <div class="row align-items-top">
+        <div class="col">
+            <h3>
+                Your Characters
+            </h3>
+            <div class="list-group">
+                @foreach (var friendly in friendlies)
+                {
+                    <button type="button" class="list-group-item list-group-item-action">
+                        @friendly.DisplayName @friendly.Stats
+                    </button>
+                }
+            </div>
+        </div>
+        <div class="col">
+            <h3>
+                Enemies
+            </h3>
+            <div class="list-group">
+                @foreach (var character in enemies)
+                {
+                    <button type="button" class="list-group-item list-group-item-action">
+                        @character.DisplayName @character.Stats @character.Entity.SystemState.OwnerId
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 @code
 {
     private string userName = "...";
+    List<CharacterViewModel> friendlies = new();
+    List<CharacterViewModel> enemies = new();
 
     protected override async Task OnParametersSetAsync()
     {
-        await changeUserService.ChangeUserAsync("jacob");
+        await changeUserService.ChangeUserAsync("system");
         var user = await gameStateClient.GetUserAsync();
         userName = user?.DisplayName ?? user?.Id ?? "??";
+
+        var allNearbyEntities = await gameStateClient.GetEntitiesNearbyAsync();
+        var allNearbyCharacters = allNearbyEntities!.Where(BattleClient.IsCharacter).ToList();
+        var ownedCharacters = allNearbyCharacters.Where(e => e.SystemState.OwnerId == user.Id).ToList();
+        friendlies = ownedCharacters.Select(e => new CharacterViewModel(e)).ToList();
+        var enemyCharacters = allNearbyCharacters.Where(e => e.SystemState.OwnerId != user.Id).ToList();
+        enemies = enemyCharacters.Select(e => new CharacterViewModel(e)).ToList();
     }
 }
