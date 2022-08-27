@@ -18,7 +18,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <button type="button" class="btn btn-danger" @onclick="Attack">
+            <button type="button" class="btn btn-danger" @onclick="Attack" disabled="@(!CanAttack)">
                 Attack!
             </button>
         </div>
@@ -29,10 +29,10 @@
                 Your Characters
             </h3>
             <div class="list-group">
-                @foreach (var friendly in friendlies)
+                @foreach (var character in friendlies)
                 {
-                    <button type="button" class="list-group-item list-group-item-action" @onclick="() => selectedFriendly = friendly">
-                        @friendly.DisplayName @friendly.Stats
+                    <button type="button" class="list-group-item list-group-item-action @active(character)" @onclick="() => selectedFriendly = character">
+                        @character.DisplayName @character.Stats
                     </button>
                 }
             </div>
@@ -44,7 +44,7 @@
             <div class="list-group">
                 @foreach (var character in enemies)
                 {
-                    <button type="button" class="list-group-item list-group-item-action" @onclick="() => selectedEnemy = character">
+                    <button type="button" class="list-group-item list-group-item-action @active(character)" @onclick="() => selectedEnemy = character">
                         @character.DisplayName @character.Stats @character.Entity.SystemState.OwnerId
                     </button>
                 }
@@ -62,6 +62,8 @@
     CharacterViewModel? selectedFriendly;
     CharacterViewModel? selectedEnemy;
 
+    bool CanAttack => selectedEnemy is not null && selectedFriendly is not null;
+
     protected override async Task OnParametersSetAsync()
     {
         await game.InitAsync();
@@ -71,11 +73,9 @@
         playerName = user.DisplayName ?? user.Id ?? "??";
 
         var allNearbyEntities = await gameStateClient.GetEntitiesNearbyAsync();
-        var allNearbyCharacters = allNearbyEntities!.Where(BattleClient.IsCharacter).ToList();
-        var ownedCharacters = allNearbyCharacters.Where(e => e.SystemState.OwnerId == user.Id).ToList();
-        friendlies = ownedCharacters.Select(e => new CharacterViewModel(e)).ToList();
-        var enemyCharacters = allNearbyCharacters.Where(e => e.SystemState.OwnerId != user.Id).ToList();
-        enemies = enemyCharacters.Select(e => new CharacterViewModel(e)).ToList();
+        var allNearbyCharacters = allNearbyEntities!.Where(BattleClient.IsCharacter);
+        friendlies = ToCharacterViewModels(allNearbyCharacters, e => e.SystemState.OwnerId == user.Id);
+        enemies = ToCharacterViewModels(allNearbyCharacters, e => e.SystemState.OwnerId != user.Id);
     }
 
     private async Task Attack()
@@ -84,6 +84,19 @@
             return;
         await game.Call.Attack(selectedFriendly.Entity, selectedEnemy.Entity);
         // HACK: Refresh enemy in view
-        selectedEnemy = new CharacterViewModel(selectedEnemy.Entity);
+        var index = enemies.IndexOf(selectedEnemy);
+        enemies[index] = selectedEnemy = new CharacterViewModel(selectedEnemy.Entity);
+    }
+
+    private List<CharacterViewModel> ToCharacterViewModels(IEnumerable<GameEntityState> entities, Func<GameEntityState, bool> predicate)
+    {
+        return entities.Where(predicate)
+                       .Select(entity => new CharacterViewModel(entity))
+                       .ToList();
+    }
+
+    string active(CharacterViewModel c)
+    {
+        return c == selectedEnemy || c == selectedFriendly ? "active" : "";
     }
 }
