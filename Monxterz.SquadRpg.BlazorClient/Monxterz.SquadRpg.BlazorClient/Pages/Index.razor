@@ -8,7 +8,22 @@
 <h1>Hello, @userName!</h1>
 
 <div class="container">
-    <div class="row align-items-top">
+    <div class="row">
+        <div class="col">
+            Attacker: @selectedFriendly?.DisplayName @selectedFriendly?.Stats
+        </div>
+        <div class="col">
+            Defender: @selectedEnemy?.DisplayName @selectedEnemy?.Stats
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-danger" @onclick="Attack">
+                Attack!
+            </button>
+        </div>
+    </div>
+    <div class="row align-items-top mt-2">
         <div class="col">
             <h3>
                 Your Characters
@@ -16,7 +31,7 @@
             <div class="list-group">
                 @foreach (var friendly in friendlies)
                 {
-                    <button type="button" class="list-group-item list-group-item-action">
+                    <button type="button" class="list-group-item list-group-item-action" @onclick="() => selectedFriendly = friendly">
                         @friendly.DisplayName @friendly.Stats
                     </button>
                 }
@@ -29,7 +44,7 @@
             <div class="list-group">
                 @foreach (var character in enemies)
                 {
-                    <button type="button" class="list-group-item list-group-item-action">
+                    <button type="button" class="list-group-item list-group-item-action" @onclick="() => selectedEnemy = character">
                         @character.DisplayName @character.Stats @character.Entity.SystemState.OwnerId
                     </button>
                 }
@@ -39,16 +54,18 @@
 </div>
 
 
-
-
 @code
 {
     private string userName = "...";
     List<CharacterViewModel> friendlies = new();
     List<CharacterViewModel> enemies = new();
+    CharacterViewModel? selectedFriendly;
+    CharacterViewModel? selectedEnemy;
 
     protected override async Task OnParametersSetAsync()
     {
+        await game.InitAsync();
+
         await changeUserService.ChangeUserAsync("system");
         var user = await gameStateClient.GetUserAsync();
         userName = user?.DisplayName ?? user?.Id ?? "??";
@@ -59,5 +76,13 @@
         friendlies = ownedCharacters.Select(e => new CharacterViewModel(e)).ToList();
         var enemyCharacters = allNearbyCharacters.Where(e => e.SystemState.OwnerId != user.Id).ToList();
         enemies = enemyCharacters.Select(e => new CharacterViewModel(e)).ToList();
+    }
+
+    private async Task Attack()
+    {
+        await game.Call.Attack(selectedFriendly.Entity, selectedEnemy.Entity);
+        // HACK: Refresh enemies
+        selectedEnemy = new CharacterViewModel(selectedEnemy.Entity);
+        //enemies = enemyCharacters.Select(e => new CharacterViewModel(e)).ToList();
     }
 }
