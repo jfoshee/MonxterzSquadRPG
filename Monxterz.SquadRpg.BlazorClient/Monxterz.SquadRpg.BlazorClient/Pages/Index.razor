@@ -5,7 +5,7 @@
 
 <PageTitle>Monxterz Squad RPG</PageTitle>
 
-<h1>Hello, @userName!</h1>
+<h1>Hello, @playerName!</h1>
 
 <div class="container">
     <div class="row">
@@ -56,7 +56,7 @@
 
 @code
 {
-    private string userName = "...";
+    private string playerName = "...";
     List<CharacterViewModel> friendlies = new();
     List<CharacterViewModel> enemies = new();
     CharacterViewModel? selectedFriendly;
@@ -67,8 +67,8 @@
         await game.InitAsync();
 
         await changeUserService.ChangeUserAsync("system");
-        var user = await gameStateClient.GetUserAsync();
-        userName = user?.DisplayName ?? user?.Id ?? "??";
+        var user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
+        playerName = user.DisplayName ?? user.Id ?? "??";
 
         var allNearbyEntities = await gameStateClient.GetEntitiesNearbyAsync();
         var allNearbyCharacters = allNearbyEntities!.Where(BattleClient.IsCharacter).ToList();
@@ -80,9 +80,10 @@
 
     private async Task Attack()
     {
+        if (selectedFriendly is null || selectedEnemy is null)
+            return;
         await game.Call.Attack(selectedFriendly.Entity, selectedEnemy.Entity);
-        // HACK: Refresh enemies
+        // HACK: Refresh enemy in view
         selectedEnemy = new CharacterViewModel(selectedEnemy.Entity);
-        //enemies = enemyCharacters.Select(e => new CharacterViewModel(e)).ToList();
     }
 }
