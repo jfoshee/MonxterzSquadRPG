@@ -1,13 +1,13 @@
 ﻿@page "/"
+@inject IChangeUserService changeUserService;
 @inject IGameStateClient gameStateClient;
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Monxterz Squad RPG</PageTitle>
 
 <h1>Hello, @userName!</h1>
 
 Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
 
 @code
 {
@@ -15,8 +15,8 @@ Welcome to your new app.
 
     protected override async Task OnParametersSetAsync()
     {
+        await changeUserService.ChangeUserAsync("jacob");
         var user = await gameStateClient.GetUserAsync();
-        userName = user.DisplayName ?? user.Id;
+        userName = user?.DisplayName ?? user?.Id ?? "??";
     }
-
 }
