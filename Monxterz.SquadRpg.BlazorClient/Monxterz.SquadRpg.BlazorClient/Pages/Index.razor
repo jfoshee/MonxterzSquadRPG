@@ -27,6 +27,9 @@
         <div class="col">
             <h3>
                 Your Characters
+                <button type="button" class="btn btn-success" title="New Character" @onclick="NewCharacter">
+                    <span class="oi oi-plus"></span>
+                </button>
             </h3>
             <div class="list-group">
                 @foreach (var character in friendlies)
@@ -68,7 +71,7 @@
     {
         await game.InitAsync();
 
-        await changeUserService.ChangeUserAsync("system");
+        await changeUserService.ChangeUserAsync("jacob");
         var user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
         playerName = user.DisplayName ?? user.Id ?? "??";
 
@@ -76,6 +79,12 @@
         var allNearbyCharacters = allNearbyEntities!.Where(BattleClient.IsCharacter);
         friendlies = ToCharacterViewModels(allNearbyCharacters, e => e.SystemState.OwnerId == user.Id);
         enemies = ToCharacterViewModels(allNearbyCharacters, e => e.SystemState.OwnerId != user.Id);
+    }
+
+    private async Task NewCharacter()
+    {
+        var character = await game.Create.Character();
+        friendlies.Insert(0, new CharacterViewModel(character));
     }
 
     private async Task Attack()
