@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject NavigationManager navigationManager;
 @inject IChangeUserService changeUserService;
 @inject IGameStateClient gameStateClient;
 @inject IGameTestHarness game;
@@ -69,9 +70,11 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        if (changeUserService.CurrentUserId is null)
+            navigationManager.NavigateTo("/login");
+
         await game.InitAsync();
 
-        await changeUserService.ChangeUserAsync("jacob");
         var user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
         playerName = user.DisplayName ?? user.Id ?? "??";
 
