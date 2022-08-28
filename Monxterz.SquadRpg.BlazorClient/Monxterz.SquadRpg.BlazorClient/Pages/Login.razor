@@ -9,28 +9,38 @@
         <label for="inputUserId" class="form-label">
             User ID
         </label>
-        <input type="text" class="form-control" id="inputUserId" @bind="userId">
-        @*<div class="form-text">We'll never share your email with anyone else.</div>*@
+        <div class="input-group has-validation">
+            @*<span class="input-group-text" id="inputGroupPrepend3">@@</span>*@
+            <input type="text" class="form-control @isInvalid()" id="inputUserId" @bind="userId" required>
+            <div id="inputUserIdFeedback" class="invalid-feedback">
+                @errorMessage
+            </div>
+        </div>
     </div>
-@*    <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1">
-    </div>
-    <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Check me out</label>
-    </div>*@
     <button type="button" class="btn btn-primary" @onclick="LoginUser">
-        Submit
+        Login
     </button>
 </form>
 
 @code {
     string? userId;
+    string? errorMessage;
 
     async Task LoginUser()
     {
-        await changeUserService.ChangeUserAsync(userId);
-        navigationManager.NavigateTo("/");
+        errorMessage = null;
+        try
+        {
+            await changeUserService.ChangeUserAsync(userId);
+            navigationManager.NavigateTo("/");
+        }
+        catch (ApiException apiException)
+        {
+            // Response has the complete the server-side exception message (including call stack)
+            errorMessage = apiException.Response ?? apiException.Message;
+        }
     }
+
+    // https://getbootstrap.com/docs/5.0/forms/validation/#server-side
+    string isInvalid() => errorMessage is not null ? "is-invalid" : "";
 }
