@@ -6,6 +6,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddMonxterzSquad();
+var baseUrl = builder.Configuration["BaseUrl"] ?? builder.HostEnvironment.BaseAddress;
+builder.Services.AddMonxterzSquad(baseUrl);
 
 await builder.Build().RunAsync();

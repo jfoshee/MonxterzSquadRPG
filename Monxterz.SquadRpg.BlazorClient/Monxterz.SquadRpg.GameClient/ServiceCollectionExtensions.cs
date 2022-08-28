@@ -6,8 +6,8 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddMonxterzSquad(this IServiceCollection services)
+    public static IServiceCollection AddMonxterzSquad(this IServiceCollection services, string baseUrl)
     {
-        return services.AddGameStateClientServices(Constants.GameMasterId, "https://localhost:7264");
+        return services.AddGameStateClientServices(Constants.GameMasterId, baseUrl);
     }
 }
