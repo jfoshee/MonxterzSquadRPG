@@ -14,12 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Monxterz.SquadRpg.GameClient\Monxterz.SquadRpg.GameClient.csproj" />
-    <Reference Include="Monxterz.StatePlatform.Client">
-      <HintPath>..\..\..\Monxterz.StatePlatform\Monxterz.StatePlatform.ClientServices\bin\Debug\netstandard2.1\Monxterz.StatePlatform.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="Monxterz.StatePlatform.ClientServices">
-      <HintPath>..\..\..\Monxterz.StatePlatform\Monxterz.StatePlatform.ClientServices\bin\Debug\netstandard2.1\Monxterz.StatePlatform.ClientServices.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
