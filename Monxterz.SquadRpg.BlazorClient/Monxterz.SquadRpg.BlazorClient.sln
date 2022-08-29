@@ -7,25 +7,49 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monxterz.SquadRpg.BlazorCli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monxterz.SquadRpg.GameClient", "Monxterz.SquadRpg.GameClient\Monxterz.SquadRpg.GameClient.csproj", "{CEE7FA95-D6D4-4F88-8D7E-8BD6A1449E47}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monxterz.StatePlatform.Client", "..\..\Monxterz.StatePlatform\Monxterz.StatePlatform.Client\Monxterz.StatePlatform.Client.csproj", "{26F7BD02-66AA-4FE9-AD0A-1F34D74A50DC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monxterz.StatePlatform.ClientServices", "..\..\Monxterz.StatePlatform\Monxterz.StatePlatform.ClientServices\Monxterz.StatePlatform.ClientServices.csproj", "{8BB2ECAC-E896-40F9-B30A-89C56D7C2913}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Unity|Any CPU = Unity|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A30579B0-D3D8-4D0E-A166-A53F1BA90BC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A30579B0-D3D8-4D0E-A166-A53F1BA90BC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A30579B0-D3D8-4D0E-A166-A53F1BA90BC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A30579B0-D3D8-4D0E-A166-A53F1BA90BC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A30579B0-D3D8-4D0E-A166-A53F1BA90BC7}.Unity|Any CPU.ActiveCfg = Release|Any CPU
+		{A30579B0-D3D8-4D0E-A166-A53F1BA90BC7}.Unity|Any CPU.Build.0 = Release|Any CPU
 		{CEE7FA95-D6D4-4F88-8D7E-8BD6A1449E47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CEE7FA95-D6D4-4F88-8D7E-8BD6A1449E47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEE7FA95-D6D4-4F88-8D7E-8BD6A1449E47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEE7FA95-D6D4-4F88-8D7E-8BD6A1449E47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEE7FA95-D6D4-4F88-8D7E-8BD6A1449E47}.Unity|Any CPU.ActiveCfg = Release|Any CPU
+		{CEE7FA95-D6D4-4F88-8D7E-8BD6A1449E47}.Unity|Any CPU.Build.0 = Release|Any CPU
+		{26F7BD02-66AA-4FE9-AD0A-1F34D74A50DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26F7BD02-66AA-4FE9-AD0A-1F34D74A50DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26F7BD02-66AA-4FE9-AD0A-1F34D74A50DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26F7BD02-66AA-4FE9-AD0A-1F34D74A50DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26F7BD02-66AA-4FE9-AD0A-1F34D74A50DC}.Unity|Any CPU.ActiveCfg = Unity|Any CPU
+		{26F7BD02-66AA-4FE9-AD0A-1F34D74A50DC}.Unity|Any CPU.Build.0 = Unity|Any CPU
+		{8BB2ECAC-E896-40F9-B30A-89C56D7C2913}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BB2ECAC-E896-40F9-B30A-89C56D7C2913}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BB2ECAC-E896-40F9-B30A-89C56D7C2913}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BB2ECAC-E896-40F9-B30A-89C56D7C2913}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BB2ECAC-E896-40F9-B30A-89C56D7C2913}.Unity|Any CPU.ActiveCfg = Unity|Any CPU
+		{8BB2ECAC-E896-40F9-B30A-89C56D7C2913}.Unity|Any CPU.Build.0 = Unity|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {00521471-85B5-40D7-B3A2-3C7D32DB79C0}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\Monxterz.StatePlatform\Monxterz.StatePlatform.Shared\Monxterz.StatePlatform.Shared.projitems*{26f7bd02-66aa-4fe9-ad0a-1f34d74a50dc}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

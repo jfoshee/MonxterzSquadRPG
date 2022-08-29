@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -10,7 +10,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Monxterz.StatePlatform.ClientServices" Version="1.0.0" />
+    <!--<PackageReference Include="Monxterz.StatePlatform.ClientServices" Version="1.0.0" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Monxterz.StatePlatform\Monxterz.StatePlatform.ClientServices\Monxterz.StatePlatform.ClientServices.csproj" />
+    <ProjectReference Include="..\..\..\Monxterz.StatePlatform\Monxterz.StatePlatform.Client\Monxterz.StatePlatform.Client.csproj" />
   </ItemGroup>
 
 </Project>
