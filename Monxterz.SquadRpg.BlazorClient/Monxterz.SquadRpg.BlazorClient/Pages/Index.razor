@@ -15,9 +15,10 @@
             <a href="" @onclick="ShowRenameDialog">
                 @selectedFriendly?.DisplayName
             </a>
-            <a href="" @onclick="StartTraining">
-                @selectedFriendly?.Stats
-            </a>
+            @selectedFriendly?.Stats
+            <button class="btn btn-outline-secondary btn-sm mx-3" title="Strength Training" @onclick="StartTraining">
+                <span class="oi oi-expand-up"></span>
+            </button>
         </div>
         <div class="col">
             Defender: @selectedEnemy?.DisplayName @selectedEnemy?.Stats
