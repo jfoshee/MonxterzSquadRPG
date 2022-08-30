@@ -18,6 +18,55 @@ public class TrainingTest
         AssertClose(expectedEnd, game.State(trainee).trainingEnd);
     }
 
+    [Theory(DisplayName = "Check unfinished 'strength' training"), RpgTest]
+    public async Task ContinueStrength(IGameTestHarness game)
+    {
+        GameEntityState trainee = await game.Create.Character();
+        await game.Call.Train(trainee, "strength", 3);
+        await game.Call.CheckTraining(trainee);
+        await Task.Delay(2_000);
+        
+        await game.Call.CheckTraining(trainee);
+        
+        Assert.True(game.State(trainee).isTraining);
+        Assert.Equal("strength", game.State(trainee).trainingAttribute);
+        Assert.NotNull(game.State(trainee).trainingStart);
+        Assert.NotNull(game.State(trainee).trainingEnd);
+    }
+
+    [Theory(DisplayName = "Complete 'strength' training"), RpgTest]
+    public async Task CompleteStrength(IGameTestHarness game)
+    {
+        GameEntityState trainee = await game.Create.Character();
+        await game.Call.Train(trainee, "strength", 2);
+        await Task.Delay(2_000);
+        
+        await game.Call.CheckTraining(trainee);
+
+        Assert.False(game.State(trainee).isTraining);
+        Assert.Equal(2, game.State(trainee).strength);
+        Assert.Null(game.State(trainee).trainingAttribute);
+        Assert.Null(game.State(trainee).trainingStart);
+        Assert.Null(game.State(trainee).trainingEnd);
+    }
+
+    [Theory(DisplayName = "Already complete 'strength' training"), RpgTest]
+    public async Task AlreadyCompleteStrength(IGameTestHarness game)
+    {
+        GameEntityState trainee = await game.Create.Character();
+        await game.Call.Train(trainee, "strength", 1);
+        await Task.Delay(1_500);
+        await game.Call.CheckTraining(trainee);
+        
+        await game.Call.CheckTraining(trainee);
+
+        Assert.False(game.State(trainee).isTraining);
+        Assert.Equal(2, game.State(trainee).strength);
+        Assert.Null(game.State(trainee).trainingAttribute);
+        Assert.Null(game.State(trainee).trainingStart);
+        Assert.Null(game.State(trainee).trainingEnd);
+    }
+
     void AssertClose(long expected, dynamic actual)
     {
         var actualValue = Convert.ToInt64(actual);

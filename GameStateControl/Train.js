@@ -1,13 +1,13 @@
-/** Attack an enemy in the same battle */
+/** Start training for one of player's characters */
 export function mutate(context, attribute, seconds) {
   if (context.entities.length != 1) {
     throw Error('Train function requires 1 Entity targets: trainee');
   }
   const traineeEntity = context.entities[0];
-  const trainee = traineeEntity.customStatePublic[context.authorId];
   if (traineeEntity.systemState.ownerId != context.userId) {
     throw Error('The trainee character does not belong to the current Player. You cannot train another player\'s character.');
   }
+  const trainee = traineeEntity.customStatePublic[context.authorId];
   if (trainee.hp <= 0) {
     throw Error('The character cannot train when dead.');
   }
