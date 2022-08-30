@@ -15,7 +15,9 @@
             <a href="" @onclick="ShowRenameDialog">
                 @selectedFriendly?.DisplayName
             </a>
-            @selectedFriendly?.Stats
+            <a href="" @onclick="StartTraining">
+                @selectedFriendly?.Stats
+            </a>
         </div>
         <div class="col">
             Defender: @selectedEnemy?.DisplayName @selectedEnemy?.Stats
@@ -41,6 +43,10 @@
                 {
                     <button type="button" class="list-group-item list-group-item-action @active(character)" @onclick="() => selectedFriendly = character">
                         @character.DisplayName @character.Stats
+                        @if (character.IsTraining)
+                        {
+                            <div class="spinner-border" role="status"></div>
+                        }
                     </button>
                 }
             </div>
@@ -127,5 +133,19 @@
     {
         var updatedEntity = await gameStateClient.PutEntityDisplayNameAsync(selectedFriendly.Entity.Id, newDisplayName);
         selectedFriendly.Entity = updatedEntity;
+    }
+
+    async Task StartTraining()
+    {
+        var character = selectedFriendly!;
+        await game.Call.Train(character.Entity, "strength", 5);
+        // HACK: Background task to check training after it is completed
+        Task.Delay(5_500).ContinueWith(_ => CheckTraining(character));
+    }
+
+    async Task CheckTraining(CharacterViewModel character)
+    {
+        await game.Call.CheckTraining(character.Entity);
+        base.StateHasChanged();
     }
 }
