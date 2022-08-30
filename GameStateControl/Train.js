@@ -11,8 +11,10 @@ export function mutate(context, attribute, seconds) {
   if (trainee.hp <= 0) {
     throw Error('The character cannot train when dead.');
   }
+  // Force seconds to a number
+  seconds = +seconds;
   // Convert milliseconds to seconds
-  var start = Math.round(Date.now() / 1000);
+  const start = Math.round(Date.now() / 1000);
   trainee.trainingStart = start;
   trainee.trainingEnd = start + seconds;
   trainee.trainingAttribute = attribute;

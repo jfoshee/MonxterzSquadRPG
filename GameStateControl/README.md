@@ -11,4 +11,5 @@
   - Bootstrap the game owner entity
     - because it needs to be created by a different user (e.g. system)
 - Game test harness
-  - Current user should default to a new Player (not system or game owner)
+  - Publish project when tests startup (not per test)
+  - game.State(xyz) return falsy for undefined state

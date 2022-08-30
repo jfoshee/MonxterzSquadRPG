@@ -7,4 +7,5 @@ function initialize(context) {
   state.hp = 100;
   state.xp = 0;
   state.strength = 1;
+  state.isTraining = false;
 }
