@@ -34,6 +34,19 @@ public class TrainingTest
         Assert.NotNull(game.State(trainee).trainingEnd);
     }
 
+    [Theory(DisplayName = "Cannot Attack while training"), RpgTest]
+    public async Task CannotAttack(IGameTestHarness game)
+    {
+        GameEntityState trainee = await game.Create.Character();
+        GameEntityState enemy = await game.Create.Character();
+        await game.Call.Train(trainee, "strength", 1);
+ 
+        await game.Invoking(async g => await (Task)g.Call.Attack(trainee, enemy))
+                  .Should()
+                  .ThrowAsync<ApiException>()
+                  .WithMessage("*training*");
+    }
+
     [Theory(DisplayName = "Complete 'strength' training"), RpgTest]
     public async Task CompleteStrength(IGameTestHarness game)
     {

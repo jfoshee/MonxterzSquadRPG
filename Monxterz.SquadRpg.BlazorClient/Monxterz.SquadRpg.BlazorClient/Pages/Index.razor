@@ -80,7 +80,7 @@
     CharacterViewModel? selectedFriendly;
     CharacterViewModel? selectedEnemy;
 
-    bool CanAttack => selectedEnemy is not null && selectedFriendly is not null;
+    bool CanAttack => selectedEnemy is not null && selectedFriendly is not null && !selectedFriendly.IsTraining;
 
     protected override async Task OnParametersSetAsync()
     {

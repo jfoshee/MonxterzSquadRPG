@@ -12,6 +12,9 @@ export function mutate(context) {
   if (attacker.hp <= 0) {
     throw Error('The character cannot attack when dead.');
   }
+  if (attacker.isTraining) {
+    throw Error('The character cannot attack while training.');
+  }
   defender.hp -= attacker.strength;
   if (defender.hp < 0) {
     defender.hp = 0;
