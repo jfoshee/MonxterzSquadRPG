@@ -12,13 +12,18 @@
     <div class="row">
         <div class="col">
             Attacker:
-            <a href="" @onclick="ShowRenameDialog">
-                @selectedFriendly?.DisplayName
-            </a>
-            @selectedFriendly?.Stats
-            <button class="btn btn-outline-secondary btn-sm mx-3" title="Strength Training" @onclick="StartTraining">
-                <span class="oi oi-expand-up"></span>
-            </button>
+            @if (selectedFriendly is not null)
+            {
+                <a href="" @onclick="ShowRenameDialog">
+                    @selectedFriendly.DisplayName
+                </a>
+                <span class="mx-1">
+                    @selectedFriendly.Stats
+                </span>
+                <button class="btn btn-outline-secondary btn-sm mx-3" title="Strength Training" @onclick="StartTraining">
+                    <span class="oi oi-expand-up"></span>
+                </button>
+            }
         </div>
         <div class="col">
             Defender: @selectedEnemy?.DisplayName @selectedEnemy?.Stats
@@ -75,6 +80,7 @@
 
 @code
 {
+    const int TrainingTime = 10;
     private string playerName = "...";
     List<CharacterViewModel> friendlies = new();
     List<CharacterViewModel> enemies = new();
@@ -87,16 +93,27 @@
     {
         if (changeUserService.CurrentUserId is null)
             navigationManager.NavigateTo("/login");
+        else
+        {
+            await game.InitAsync();
 
-        await game.InitAsync();
+            var user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
+            playerName = user.DisplayName ?? user.Id ?? "??";
 
-        var user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
-        playerName = user.DisplayName ?? user.Id ?? "??";
+            var allNearbyEntities = await gameStateClient.GetEntitiesNearbyAsync();
+            var allNearbyCharacters = allNearbyEntities!.Where(BattleClient.IsCharacter);
+            friendlies = ToCharacterViewModels(allNearbyCharacters, e => e.SystemState.OwnerId == user.Id);
+            enemies = ToCharacterViewModels(allNearbyCharacters, e => e.SystemState.OwnerId != user.Id);
 
-        var allNearbyEntities = await gameStateClient.GetEntitiesNearbyAsync();
-        var allNearbyCharacters = allNearbyEntities!.Where(BattleClient.IsCharacter);
-        friendlies = ToCharacterViewModels(allNearbyCharacters, e => e.SystemState.OwnerId == user.Id);
-        enemies = ToCharacterViewModels(allNearbyCharacters, e => e.SystemState.OwnerId != user.Id);
+            // HACK: Check training for any friendlies that are traning when the page loads
+            Task.Delay(TrainingTime * 1000).ContinueWith(_ => {
+                foreach(var friendly in friendlies)
+                {
+                    if (friendly.IsTraining)
+                        CheckTraining(friendly);
+                }
+            });
+        }
     }
 
     private async Task NewCharacter()
@@ -139,9 +156,9 @@
     async Task StartTraining()
     {
         var character = selectedFriendly!;
-        await game.Call.Train(character.Entity, "strength", 5);
+        await game.Call.Train(character.Entity, "strength", TrainingTime);
         // HACK: Background task to check training after it is completed
-        Task.Delay(5_500).ContinueWith(_ => CheckTraining(character));
+        Task.Delay(TrainingTime * 1000).ContinueWith(_ => CheckTraining(character));
     }
 
     async Task CheckTraining(CharacterViewModel character)
