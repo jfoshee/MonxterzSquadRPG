@@ -6,7 +6,7 @@ namespace Monxterz.SquadRpg.GameClient;
 
 public class CharacterViewModel
 {
-    public GameEntityState Entity { get; }
+    public GameEntityState Entity { get; set; }
 
     public CharacterViewModel(GameEntityState entity)
     {
