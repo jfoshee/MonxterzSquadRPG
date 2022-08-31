@@ -116,7 +116,7 @@ public class AttackTest
         Assert.True(game.State(attacker).isRecovering);
 
         await Task.Delay(2_000);
-        await game.Call.CheckTraining(attacker);
+        await game.Call.CheckStatus(attacker);
 
         Assert.False(game.State(attacker).isRecovering);
         await game.Call.Attack(attacker, defender);

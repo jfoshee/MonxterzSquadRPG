@@ -110,7 +110,7 @@
                 foreach(var friendly in friendlies)
                 {
                     if (friendly.IsTraining)
-                        CheckTraining(friendly);
+                        CheckStatus(friendly);
                 }
             });
         }
@@ -158,12 +158,12 @@
         var character = selectedFriendly!;
         await game.Call.Train(character.Entity, "strength", TrainingTime);
         // HACK: Background task to check training after it is completed
-        Task.Delay(TrainingTime * 1000).ContinueWith(_ => CheckTraining(character));
+        Task.Delay(TrainingTime * 1000).ContinueWith(_ => CheckStatus(character));
     }
 
-    async Task CheckTraining(CharacterViewModel character)
+    async Task CheckStatus(CharacterViewModel character)
     {
-        await game.Call.CheckTraining(character.Entity);
+        await game.Call.CheckStatus(character.Entity);
         base.StateHasChanged();
     }
 }

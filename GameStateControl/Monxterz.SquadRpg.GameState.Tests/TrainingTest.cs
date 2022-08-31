@@ -23,10 +23,10 @@ public class TrainingTest
     {
         GameEntityState trainee = await game.Create.Character();
         await game.Call.Train(trainee, "strength", 3);
-        await game.Call.CheckTraining(trainee);
+        await game.Call.CheckStatus(trainee);
         await Task.Delay(2_000);
         
-        await game.Call.CheckTraining(trainee);
+        await game.Call.CheckStatus(trainee);
         
         Assert.True(game.State(trainee).isTraining);
         Assert.Equal("strength", game.State(trainee).trainingAttribute);
@@ -54,7 +54,7 @@ public class TrainingTest
         await game.Call.Train(trainee, "strength", 2);
         await Task.Delay(2_000);
         
-        await game.Call.CheckTraining(trainee);
+        await game.Call.CheckStatus(trainee);
 
         Assert.False(game.State(trainee).isTraining);
         Assert.Equal(2, game.State(trainee).strength);
@@ -69,9 +69,9 @@ public class TrainingTest
         GameEntityState trainee = await game.Create.Character();
         await game.Call.Train(trainee, "strength", 1);
         await Task.Delay(1_500);
-        await game.Call.CheckTraining(trainee);
+        await game.Call.CheckStatus(trainee);
         
-        await game.Call.CheckTraining(trainee);
+        await game.Call.CheckStatus(trainee);
 
         Assert.False(game.State(trainee).isTraining);
         Assert.Equal(2, game.State(trainee).strength);

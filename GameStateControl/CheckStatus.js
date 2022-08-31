@@ -1,7 +1,7 @@
-/** Check and, if applicable, complete character training */
+/** Check status and, if applicable, complete character recovery and training */
 export function mutate(context) {
   if (context.entities.length != 1) {
-    throw Error('CheckTraining function requires 1 Entity targets: trainee');
+    throw Error('CheckStatus function requires 1 Entity targets: trainee');
   }
   const traineeEntity = context.entities[0];
   if (traineeEntity.systemState.ownerId != context.userId) {
