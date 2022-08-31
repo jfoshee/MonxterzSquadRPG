@@ -20,8 +20,11 @@
                 <span class="mx-1">
                     @selectedFriendly.Stats
                 </span>
-                <button class="btn btn-outline-secondary btn-sm mx-3" title="Strength Training" @onclick="StartTraining">
+                <button class="btn btn-outline-secondary btn-sm" title="Strength Training" @onclick="StartTraining">
                     <span class="oi oi-expand-up"></span>
+                </button>
+                <button class="btn btn-outline-secondary btn-sm" title="Refresh Status" @onclick="() => CheckStatus(selectedFriendly)">
+                    <span class="oi oi-loop-circular"></span>
                 </button>
             }
         </div>
@@ -49,7 +52,7 @@
                 {
                     <button type="button" class="list-group-item list-group-item-action @active(character)" @onclick="() => selectedFriendly = character">
                         @character.DisplayName @character.Stats
-                        @if (character.IsTraining)
+                        @if (character.IsTraining || character.IsRecovering)
                         {
                             <div class="spinner-grow spinner-grow-sm float-end" role="status"></div>
                         }
@@ -81,13 +84,17 @@
 @code
 {
     const int TrainingTime = 10;
+    const int RecoveryTime = 10 + 1; // Happens to match what is in Character.js
     private string playerName = "...";
     List<CharacterViewModel> friendlies = new();
     List<CharacterViewModel> enemies = new();
     CharacterViewModel? selectedFriendly;
     CharacterViewModel? selectedEnemy;
 
-    bool CanAttack => selectedEnemy is not null && selectedFriendly is not null && !selectedFriendly.IsTraining;
+    bool CanAttack => selectedEnemy is not null 
+                      && selectedFriendly is not null 
+                      && !selectedFriendly.IsTraining
+                      && !selectedFriendly.IsRecovering;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -109,7 +116,7 @@
             Task.Delay(TrainingTime * 1000).ContinueWith(_ => {
                 foreach(var friendly in friendlies)
                 {
-                    if (friendly.IsTraining)
+                    if (friendly.IsTraining || friendly.IsRecovering)
                         CheckStatus(friendly);
                 }
             });
@@ -130,6 +137,8 @@
         // HACK: Refresh enemy in view
         var index = enemies.IndexOf(selectedEnemy);
         enemies[index] = selectedEnemy = new CharacterViewModel(selectedEnemy.Entity);
+        // HACK: Background task to check recovery after it is completed
+        Task.Delay(RecoveryTime * 1000).ContinueWith(_ => CheckStatus(selectedFriendly));
     }
 
     private List<CharacterViewModel> ToCharacterViewModels(IEnumerable<GameEntityState> entities, Func<GameEntityState, bool> predicate)
