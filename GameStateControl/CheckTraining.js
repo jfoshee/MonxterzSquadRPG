@@ -11,12 +11,9 @@ export function mutate(context) {
   if (trainee.hp <= 0) {
     throw Error('The character is dead and cannot complete training.');
   }
-  if (!trainee.isTraining) {
-    return;
-  }
   // Convert milliseconds to seconds
   const now = Math.round(Date.now() / 1000);
-  if (trainee.trainingEnd <= now) {
+  if (trainee.trainingEnd && trainee.trainingEnd <= now) {
     // Training is complete
     trainee.trainingStart = 
     trainee.trainingEnd = 
@@ -24,5 +21,10 @@ export function mutate(context) {
     trainee.isTraining = false;
     // TODO: How much strength to add? training rate...
     trainee.strength += 1;
+  }
+  if (trainee.recoveringEnd && trainee.recoveringEnd <= now) {
+    trainee.recoveringStart =
+    trainee.recoveringEnd = null;
+    trainee.isRecovering = false;
   }
 }

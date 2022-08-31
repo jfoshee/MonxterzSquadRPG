@@ -8,4 +8,6 @@ function initialize(context) {
   state.xp = 0;
   state.strength = 1;
   state.isTraining = false;
+  state.isRecovering = false;
+  state.recoveryTime = 10;
 }

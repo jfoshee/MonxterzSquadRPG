@@ -84,6 +84,44 @@ public class AttackTest
                   .WithMessage("*cannot attack*player*");
     }
 
+    [Theory(DisplayName = "Recovering"), RpgTest]
+    public async Task Recovering(IGameTestHarness game)
+    {
+        GameEntityState attacker = await game.Create.Character();
+        GameEntityState defender = await game.Create.Character();
+        // Initially nobody is recovering
+        Assert.False(game.State(attacker).isRecovering);
+        Assert.False(game.State(defender).isRecovering);
+
+        await game.Call.Attack(attacker, defender);
+
+        // After attack Attacker is recovering
+        Assert.True(game.State(attacker).isRecovering);
+        Assert.False(game.State(defender).isRecovering);        
+        await game.Invoking(async g => await (Task)g.Call.Attack(attacker, defender))
+                  .Should()
+                  .ThrowAsync<ApiException>()
+                  .WithMessage("*cannot attack*recovering*");
+    }
+
+    [Theory(DisplayName = "Recovered"), RpgTest]
+    public async Task Recovered(IGameTestHarness game)
+    {
+        GameEntityState attacker = await game.Create.Character();
+        GameEntityState defender = await game.Create.Character();
+        Assert.Equal(10, game.State(attacker).recoveryTime);
+        game.State(attacker).recoveryTime = 2;
+
+        await game.Call.Attack(attacker, defender);
+        Assert.True(game.State(attacker).isRecovering);
+
+        await Task.Delay(2_000);
+        await game.Call.CheckTraining(attacker);
+
+        Assert.False(game.State(attacker).isRecovering);
+        await game.Call.Attack(attacker, defender);
+    }
+
     // TODO: Ensure in same battle
     // TODO: Handle not your turn
 }

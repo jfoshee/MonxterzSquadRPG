@@ -15,6 +15,14 @@ export function mutate(context) {
   if (attacker.isTraining) {
     throw Error('The character cannot attack while training.');
   }
+  if (attacker.isRecovering) {
+    throw Error('The character cannot attack while recovering.');
+  }
+  attacker.isRecovering = true;
+  // Convert milliseconds to seconds
+  const start = Math.round(Date.now() / 1000);
+  attacker.recoveringStart = start;
+  attacker.recoveringEnd = start + +attacker.recoveryTime;
   defender.hp -= attacker.strength;
   if (defender.hp < 0) {
     defender.hp = 0;
