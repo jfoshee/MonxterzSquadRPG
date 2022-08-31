@@ -80,6 +80,20 @@ public class TrainingTest
         Assert.Null(game.State(trainee).trainingEnd);
     }
 
+    [Theory(DisplayName = "Recovering from Attack"), RpgTest]
+    public async Task Recovering(IGameTestHarness game)
+    {
+        GameEntityState attacker = await game.Create.Character();
+        GameEntityState defender = await game.Create.Character();
+        await game.Call.Attack(attacker, defender);
+        Assert.True(game.State(attacker).isRecovering);
+
+        await game.Invoking(async g => await (Task)g.Call.Train(attacker, "strength", 1))
+                  .Should()
+                  .ThrowAsync<ApiException>()
+                  .WithMessage("*cannot train*recovering*");
+    }
+
     void AssertClose(long expected, dynamic actual)
     {
         var actualValue = Convert.ToInt64(actual);

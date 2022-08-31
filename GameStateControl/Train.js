@@ -11,6 +11,9 @@ export function mutate(context, attribute, seconds) {
   if (trainee.hp <= 0) {
     throw Error('The character cannot train when dead.');
   }
+  if (trainee.isRecovering) {
+    throw Error('The character cannot train while recovering.');
+  }
   // Force seconds to a number
   seconds = +seconds;
   // Convert milliseconds to seconds

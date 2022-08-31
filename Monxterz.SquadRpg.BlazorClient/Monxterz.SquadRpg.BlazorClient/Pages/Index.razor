@@ -20,12 +20,16 @@
                 <span class="mx-1">
                     @selectedFriendly.Stats
                 </span>
-                <button class="btn btn-outline-secondary btn-sm" title="Strength Training" @onclick="StartTraining">
+                <button class="btn btn-outline-secondary btn-sm" title="Strength Training" @onclick="StartTraining" disabled="@(!CanTrain)">
                     <span class="oi oi-expand-up"></span>
                 </button>
                 <button class="btn btn-outline-secondary btn-sm" title="Refresh Status" @onclick="() => CheckStatus(selectedFriendly)">
                     <span class="oi oi-loop-circular"></span>
                 </button>
+                @if (selectedFriendly.IsTraining || selectedFriendly.IsRecovering)
+                {
+                    <div class="spinner-grow spinner-grow-sm float-end" role="status"></div>
+                }
             }
         </div>
         <div class="col">
@@ -90,6 +94,10 @@
     List<CharacterViewModel> enemies = new();
     CharacterViewModel? selectedFriendly;
     CharacterViewModel? selectedEnemy;
+
+    bool CanTrain => selectedFriendly is not null 
+                     && !selectedFriendly.IsTraining
+                     && !selectedFriendly.IsRecovering;
 
     bool CanAttack => selectedEnemy is not null 
                       && selectedFriendly is not null 
