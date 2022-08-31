@@ -22,7 +22,7 @@ public class TrainingTest
     public async Task ContinueStrength(IGameTestHarness game)
     {
         GameEntityState trainee = await game.Create.Character();
-        await game.Call.Train(trainee, "strength", 3);
+        await game.Call.Train(trainee, "strength", 4);
         await game.Call.CheckStatus(trainee);
         await Task.Delay(2_000);
         

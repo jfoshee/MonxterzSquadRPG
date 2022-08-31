@@ -12,7 +12,8 @@ export function mutate(context) {
     throw Error('The character is dead and cannot complete training.');
   }
   // Convert milliseconds to seconds
-  const now = Math.round(Date.now() / 1000);
+  // Rounding up to give benefit to slightly early status check
+  const now = Math.ceil(Date.now() / 1000);
   state.statusCheckTime = now;
   if (state.trainingEnd && state.trainingEnd <= now) {
     // Training is complete
