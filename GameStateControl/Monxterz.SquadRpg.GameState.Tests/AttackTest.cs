@@ -122,6 +122,21 @@ public class AttackTest
         await game.Call.Attack(attacker, defender);
     }
 
-    // TODO: Ensure in same battle
-    // TODO: Handle not your turn
+    [Theory(DisplayName = "Handle missing Recovery Time"), RpgTest]
+    public async Task MissingRecoveryTime(IGameTestHarness game, IGameStateClient client)
+    {
+        // Create an entity w/out recovery time
+        GameEntityState attacker = await client.PostEntityNewAsync(null) ?? throw new Exception();
+        GameEntityState defender = await game.Create.Character();
+        game.State(attacker).strength = 1;
+
+        await game.Call.Attack(attacker, defender);
+
+        Assert.True(game.State(attacker).isRecovering);
+        Assert.Equal(10, game.State(attacker).recoveryTime);
+        var expectedStart = DateTimeOffset.Now.ToUnixTimeSeconds();
+        var expectedEnd = expectedStart + 10;
+        Assert.InRange<long>(game.State(attacker).recoveringStart, expectedStart - 1, expectedStart + 1);
+        Assert.InRange<long>(game.State(attacker).recoveringEnd, expectedEnd - 1, expectedEnd + 1);
+    }
 }

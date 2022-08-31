@@ -19,6 +19,10 @@ export function mutate(context) {
     throw Error('The character cannot attack while recovering.');
   }
   attacker.isRecovering = true;
+  // Handle if recoveryTime is undefined by setting to default value
+  if (isNaN(+attacker.recoveryTime)) {
+    attacker.recoveryTime = 10;
+  }
   // Convert milliseconds to seconds
   const start = Math.round(Date.now() / 1000);
   attacker.recoveringStart = start;
