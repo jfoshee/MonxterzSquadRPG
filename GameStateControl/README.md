@@ -13,3 +13,4 @@
 - Game test harness
   - Publish project when tests startup (not per test)
   - game.State(xyz) return falsy for undefined state
+  - inject the current player
