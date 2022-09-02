@@ -47,8 +47,7 @@
         }
         catch (ApiException apiException)
         {
-            // Response has the complete the server-side exception message (including call stack)
-            errorMessage = apiException.Response?.FirstLine() ?? apiException.Message;
+            errorMessage = apiException.SimpleMessage();
         }
     }
 
