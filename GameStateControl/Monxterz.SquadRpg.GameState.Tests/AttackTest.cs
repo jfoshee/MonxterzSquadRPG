@@ -5,8 +5,9 @@ public class AttackTest
     [Theory(DisplayName = "Basic"), RpgTest]
     public async Task BasicAttack(IGameTestHarness game)
     {
-        GameEntityState attacker = await game.Create.Character();
         GameEntityState defender = await game.Create.Character();
+        await game.NewCurrentPlayer();
+        GameEntityState attacker = await game.Create.Character();
         // Initialize attacker strength & defender hp
         game.State(attacker).strength = 13;
         game.State(defender).hp = 17;
@@ -40,8 +41,9 @@ public class AttackTest
     [Theory(DisplayName = "Kill"), RpgTest]
     public async Task Kill(IGameTestHarness game)
     {
-        GameEntityState attacker = await game.Create.Character();
         GameEntityState defender = await game.Create.Character();
+        await game.NewCurrentPlayer();
+        GameEntityState attacker = await game.Create.Character();
         // Initialize attacker strength & defender hp
         game.State(attacker).strength = 20;
         game.State(defender).hp = 17;
@@ -55,8 +57,9 @@ public class AttackTest
     [Theory(DisplayName = "Cannot Kill after Death"), RpgTest]
     public async Task CannotKillPostDeath(IGameTestHarness game)
     {
-        GameEntityState attacker = await game.Create.Character();
         GameEntityState defender = await game.Create.Character();
+        await game.NewCurrentPlayer();
+        GameEntityState attacker = await game.Create.Character();
         // Initialize attacker strength & defender hp
         game.State(attacker).hp = 0;
         game.State(attacker).strength = 20;
@@ -74,8 +77,9 @@ public class AttackTest
     [Theory(DisplayName = "Cannot attack w/ another player's character"), RpgTest]
     public async Task AnotherPlayersCharacter(IGameTestHarness game)
     {
-        GameEntityState attacker = await game.Create.Character();
         GameEntityState defender = await game.Create.Character();
+        await game.NewCurrentPlayer();
+        GameEntityState attacker = await game.Create.Character();
         await game.NewCurrentPlayer();
 
         await game.Invoking(async g => await (Task)g.Call.Attack(attacker, defender))
@@ -87,8 +91,9 @@ public class AttackTest
     [Theory(DisplayName = "Recovering"), RpgTest]
     public async Task Recovering(IGameTestHarness game)
     {
-        GameEntityState attacker = await game.Create.Character();
         GameEntityState defender = await game.Create.Character();
+        await game.NewCurrentPlayer();
+        GameEntityState attacker = await game.Create.Character();
         // Initially nobody is recovering
         Assert.False(game.State(attacker).isRecovering);
         Assert.False(game.State(defender).isRecovering);
@@ -107,8 +112,9 @@ public class AttackTest
     [Theory(DisplayName = "Recovered"), RpgTest]
     public async Task Recovered(IGameTestHarness game)
     {
-        GameEntityState attacker = await game.Create.Character();
         GameEntityState defender = await game.Create.Character();
+        await game.NewCurrentPlayer();
+        GameEntityState attacker = await game.Create.Character();
         Assert.Equal(10, game.State(attacker).recoveryTime);
         game.State(attacker).recoveryTime = 2;
 

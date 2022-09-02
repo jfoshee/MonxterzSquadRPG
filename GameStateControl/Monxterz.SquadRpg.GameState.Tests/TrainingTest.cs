@@ -37,8 +37,9 @@ public class TrainingTest
     [Theory(DisplayName = "Cannot Attack while training"), RpgTest]
     public async Task CannotAttack(IGameTestHarness game)
     {
-        GameEntityState trainee = await game.Create.Character();
         GameEntityState enemy = await game.Create.Character();
+        await game.NewCurrentPlayer();
+        GameEntityState trainee = await game.Create.Character();
         await game.Call.Train(trainee, "strength", 1);
  
         await game.Invoking(async g => await (Task)g.Call.Attack(trainee, enemy))
@@ -83,8 +84,9 @@ public class TrainingTest
     [Theory(DisplayName = "Recovering from Attack"), RpgTest]
     public async Task Recovering(IGameTestHarness game)
     {
-        GameEntityState attacker = await game.Create.Character();
         GameEntityState defender = await game.Create.Character();
+        await game.NewCurrentPlayer();
+        GameEntityState attacker = await game.Create.Character();
         await game.Call.Attack(attacker, defender);
         Assert.True(game.State(attacker).isRecovering);
 

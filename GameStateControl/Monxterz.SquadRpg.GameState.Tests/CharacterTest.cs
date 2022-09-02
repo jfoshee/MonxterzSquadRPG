@@ -15,4 +15,21 @@ public class CharacterTest
         Assert.False(characterState.isTraining);
         Assert.False(characterState.isRecovering);
     }
+
+    [Theory(DisplayName = "Delay between Character Creation"), RpgTest]
+    public async Task Delays(IGameTestHarness game, IGameStateClient client)
+    {
+        await game.Create.Character();
+        await game.Invoking(g => (Task)g.Create.Character())
+                  .Should()
+                  .ThrowAsync<Exception>()
+                  .WithMessage("*wait*");
+        var player = await client.GetUserAsync() ?? throw new Exception("No user");
+        var nowSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
+        Assert.InRange(game.State(player).characterCreatedAt, nowSeconds - 1, nowSeconds);
+
+        // Force the creation time backwards so that we can create again
+        game.State(player).characterCreatedAt = nowSeconds - 5 * 60;
+        await game.Create.Character();
+    }
 }
