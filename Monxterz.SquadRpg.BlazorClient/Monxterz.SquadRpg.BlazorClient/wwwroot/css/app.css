@@ -62,3 +62,8 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.blazored-toast-container {
+    /* Customize Blazored Toast z-Index to be above bootstrap active button (z-index = 2) */
+    z-index: 10;
+}

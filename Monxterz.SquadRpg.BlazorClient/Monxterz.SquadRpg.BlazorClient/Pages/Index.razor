@@ -3,6 +3,7 @@
 @inject IChangeUserService changeUserService;
 @inject IGameStateClient gameStateClient;
 @inject IGameTestHarness game;
+@inject IToastService toastService;
 
 <PageTitle>Monxterz Squad RPG</PageTitle>
 
@@ -84,6 +85,10 @@
 {
     <Dialog Title="Rename a Character" Message="New Character Name" OnClose="CloseRenameDialog" Text="@selectedFriendly?.DisplayName" OnSave="RenameCharacter" />
 }
+<BlazoredToasts Position="ToastPosition.TopRight"
+                Timeout="10"
+                RemoveToastsOnNavigation="true"
+                ShowProgressBar="true" />
 
 @code
 {
@@ -133,20 +138,34 @@
 
     private async Task NewCharacter()
     {
-        var character = await game.Create.Character();
-        friendlies.Insert(0, new CharacterViewModel(character));
+        try
+        {
+            var character = await game.Create.Character();
+            friendlies.Insert(0, new CharacterViewModel(character));
+        }
+        catch (ApiException apiException)
+        {
+            ShowError(apiException);
+        }
     }
 
     private async Task Attack()
     {
         if (selectedFriendly is null || selectedEnemy is null)
             return;
-        await game.Call.Attack(selectedFriendly.Entity, selectedEnemy.Entity);
-        // HACK: Refresh enemy in view
-        var index = enemies.IndexOf(selectedEnemy);
-        enemies[index] = selectedEnemy = new CharacterViewModel(selectedEnemy.Entity);
-        // HACK: Background task to check recovery after it is completed
-        Task.Delay(RecoveryTime * 1000).ContinueWith(_ => CheckStatus(selectedFriendly));
+        try
+        {
+            await game.Call.Attack(selectedFriendly.Entity, selectedEnemy.Entity);
+            // HACK: Refresh enemy in view
+            var index = enemies.IndexOf(selectedEnemy);
+            enemies[index] = selectedEnemy = new CharacterViewModel(selectedEnemy.Entity);
+            // HACK: Background task to check recovery after it is completed
+            Task.Delay(RecoveryTime * 1000).ContinueWith(_ => CheckStatus(selectedFriendly));
+        }
+        catch (ApiException apiException)
+        {
+            ShowError(apiException);
+        }
     }
 
     private List<CharacterViewModel> ToCharacterViewModels(IEnumerable<GameEntityState> entities, Func<GameEntityState, bool> predicate)
@@ -166,21 +185,40 @@
     void ShowRenameDialog() => showRenameDialog = true;
     async Task RenameCharacter(string newDisplayName)
     {
-        var updatedEntity = await gameStateClient.PutEntityDisplayNameAsync(selectedFriendly.Entity.Id, newDisplayName);
-        selectedFriendly.Entity = updatedEntity;
+        try
+        {
+            var updatedEntity = await gameStateClient.PutEntityDisplayNameAsync(selectedFriendly.Entity.Id, newDisplayName);
+            selectedFriendly.Entity = updatedEntity;
+        }
+        catch (ApiException apiException)
+        {
+            ShowError(apiException);
+        }
     }
 
     async Task StartTraining()
     {
-        var character = selectedFriendly!;
-        await game.Call.Train(character.Entity, "strength", TrainingTime);
-        // HACK: Background task to check training after it is completed
-        Task.Delay(TrainingTime * 1000).ContinueWith(_ => CheckStatus(character));
+        try
+        {
+            var character = selectedFriendly!;
+            await game.Call.Train(character.Entity, "strength", TrainingTime);
+            // HACK: Background task to check training after it is completed
+            Task.Delay(TrainingTime * 1000).ContinueWith(_ => CheckStatus(character));
+        }
+        catch (ApiException apiException)
+        {
+            ShowError(apiException);
+        }
     }
 
     async Task CheckStatus(CharacterViewModel character)
     {
         await game.Call.CheckStatus(character.Entity);
         base.StateHasChanged();
+    }
+
+    private void ShowError(ApiException apiException)
+    {
+        toastService.ShowError(apiException.SimpleMessage());
     }
 }
