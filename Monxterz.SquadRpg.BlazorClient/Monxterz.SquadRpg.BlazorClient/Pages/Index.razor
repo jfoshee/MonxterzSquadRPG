@@ -4,6 +4,8 @@
 @inject IGameStateClient gameStateClient;
 @inject IGameTestHarness game;
 @inject IToastService toastService;
+@inject ILocalStorageService localStorageService;
+@inject IGameBearerTokenProvider gameTokenProvider;
 
 <PageTitle>Monxterz Squad RPG</PageTitle>
 
@@ -108,6 +110,14 @@
                       && selectedFriendly is not null
                       && !selectedFriendly.IsTraining
                       && !selectedFriendly.IsRecovering;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await localStorageService.GetItemAsync<string>("Token");
+        var userId = await localStorageService.GetItemAsync<string>("UserID");
+        // TODO: Break direct dependence on IGameBearerTokenProvider
+        gameTokenProvider.SetBearerToken(userId, token);
+    }
 
     protected override async Task OnParametersSetAsync()
     {

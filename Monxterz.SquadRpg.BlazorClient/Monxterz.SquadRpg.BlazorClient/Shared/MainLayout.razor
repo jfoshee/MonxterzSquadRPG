@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @inject IChangeUserService changeUserService;
 @inject NavigationManager navigationManager;
+@inject ILocalStorageService localStorage;
 
 <div class="page">
     <div class="sidebar">
@@ -24,6 +25,8 @@
     public async Task Logout()
     {
         await changeUserService.ChangeUserAsync(null);
+        await localStorage.RemoveItemAsync("Token");
+        await localStorage.RemoveItemAsync("UserID");
         navigationManager.NavigateTo("/login");
     }
 }

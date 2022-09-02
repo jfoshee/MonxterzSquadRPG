@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Blazored.Toast;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -10,5 +11,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 var baseUrl = builder.Configuration["BaseUrl"] ?? builder.HostEnvironment.BaseAddress;
 builder.Services.AddMonxterzSquad(baseUrl);
 builder.Services.AddBlazoredToast();
+builder.Services.AddBlazoredLocalStorage();
 
 await builder.Build().RunAsync();

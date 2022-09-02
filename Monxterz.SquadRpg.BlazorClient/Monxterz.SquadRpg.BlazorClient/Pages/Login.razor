@@ -2,6 +2,8 @@
 @inject IChangeUserService changeUserService;
 @inject NavigationManager navigationManager;
 @inject IGameStateClient gameStateClient;
+@inject ILocalStorageService localStorageService;
+@inject IGameBearerTokenProvider gameTokenProvider;
 
 <h3>Login</h3>
 
@@ -41,7 +43,14 @@
             await changeUserService.ChangeUserAsync(userId);
             var response = await gameStateClient.GetAuthTestAsync();
             if (response?.IsAuthenticated == true && response?.UserId == userId)
+            {
+                // Save JWT Token
+                // TODO: Break direct dependence on IGameBearerTokenProvider
+                var token = gameTokenProvider.BearerToken;
+                await localStorageService.SetItemAsync("Token", gameTokenProvider.BearerToken);
+                await localStorageService.SetItemAsync("UserID", gameTokenProvider.UserId);
                 navigationManager.NavigateTo("/");
+            }
             else
                 errorMessage = "The authentication test failed. The user could not be authenticated.";
         }
