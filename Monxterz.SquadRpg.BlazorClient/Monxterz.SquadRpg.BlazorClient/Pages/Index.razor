@@ -100,12 +100,12 @@
     CharacterViewModel? selectedFriendly;
     CharacterViewModel? selectedEnemy;
 
-    bool CanTrain => selectedFriendly is not null 
+    bool CanTrain => selectedFriendly is not null
                      && !selectedFriendly.IsTraining
                      && !selectedFriendly.IsRecovering;
 
-    bool CanAttack => selectedEnemy is not null 
-                      && selectedFriendly is not null 
+    bool CanAttack => selectedEnemy is not null
+                      && selectedFriendly is not null
                       && !selectedFriendly.IsTraining
                       && !selectedFriendly.IsRecovering;
 
@@ -126,8 +126,9 @@
             enemies = ToCharacterViewModels(allNearbyCharacters, e => e.SystemState.OwnerId != user.Id);
 
             // HACK: Check training for any friendlies that are traning when the page loads
-            Task.Delay(TrainingTime * 1000).ContinueWith(_ => {
-                foreach(var friendly in friendlies)
+            Task.Delay(TrainingTime * 1000).ContinueWith(_ =>
+            {
+                foreach (var friendly in friendlies)
                 {
                     if (friendly.IsTraining || friendly.IsRecovering)
                         CheckStatus(friendly);
@@ -213,8 +214,15 @@
 
     async Task CheckStatus(CharacterViewModel character)
     {
-        await game.Call.CheckStatus(character.Entity);
-        base.StateHasChanged();
+        try
+        {
+            await game.Call.CheckStatus(character.Entity);
+            base.StateHasChanged();
+        }
+        catch (ApiException apiException)
+        {
+            ShowError(apiException);
+        }
     }
 
     private void ShowError(ApiException apiException)
