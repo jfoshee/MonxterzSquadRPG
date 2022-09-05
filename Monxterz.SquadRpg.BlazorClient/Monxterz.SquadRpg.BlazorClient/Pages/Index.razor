@@ -218,8 +218,10 @@
 
     private List<CharacterViewModel> ToCharacterViewModels(IEnumerable<GameEntityState> entities, Func<GameEntityState, bool> predicate)
     {
+        // Reversed so youngest first
         return entities.Where(predicate)
                        .Select(entity => new CharacterViewModel(entity))
+                       .Reverse()
                        .ToList();
     }
 
