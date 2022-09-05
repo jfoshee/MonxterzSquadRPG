@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager navigationManager;
 @inject IChangeUserService changeUserService;
 @inject IGameStateClient gameStateClient;
@@ -10,6 +11,7 @@
 <PageTitle>Monxterz Squad RPG</PageTitle>
 
 <h1>Hello, @playerName!</h1>
+<h2>Connected: @IsConnected</h2>
 
 <div class="container">
     <div class="row">
@@ -94,6 +96,7 @@
 
 @code
 {
+    private HubConnection? hubConnection;
     const int TrainingTime = 10;
     const int RecoveryTime = 10 + 1; // Happens to match what is in Attack.js
     private string playerName = "...";
@@ -101,6 +104,9 @@
     List<CharacterViewModel> enemies = new();
     CharacterViewModel? selectedFriendly;
     CharacterViewModel? selectedEnemy;
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
 
     bool CanTrain => selectedFriendly is not null
                      && !selectedFriendly.IsTraining
@@ -117,6 +123,15 @@
         var userId = await localStorageService.GetItemAsync<string>("UserID");
         // TODO: Break direct dependence on IGameBearerTokenProvider
         gameTokenProvider.SetBearerToken(userId, token);
+
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl("https://localhost:7155/hub")
+            .Build();
+        hubConnection.On("ReceiveNotification", () =>
+        {
+            toastService.ShowInfo("Notified");
+        });
+        await hubConnection.StartAsync();
     }
 
     protected override async Task OnParametersSetAsync()
