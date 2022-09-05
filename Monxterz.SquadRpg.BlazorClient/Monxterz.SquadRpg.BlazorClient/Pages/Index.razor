@@ -7,6 +7,8 @@
 @inject IToastService toastService;
 @inject ILocalStorageService localStorageService;
 @inject IGameBearerTokenProvider gameTokenProvider;
+@inject IConfiguration configuration;
+@inject ILogger<Index> logger;
 
 <PageTitle>Monxterz Squad RPG</PageTitle>
 
@@ -123,13 +125,19 @@
         var userId = await localStorageService.GetItemAsync<string>("UserID");
         // TODO: Break direct dependence on IGameBearerTokenProvider
         gameTokenProvider.SetBearerToken(userId, token);
-
+        // Connect to Change Notifications service
+        var notificationsUrl = configuration["NotificationsUrl"];
+        if (notificationsUrl is null)
+        {
+            logger.LogError("Config['NotificationsUrl'] is missing. Notifications will not work.");
+            return;
+        }
         hubConnection = new HubConnectionBuilder()
-            .WithUrl("https://localhost:7155/hub")
+            .WithUrl(notificationsUrl)
             .Build();
         hubConnection.On("ReceiveNotification", () =>
         {
-            toastService.ShowInfo("Notified");
+            toastService.ShowInfo($"Notified from {notificationsUrl}");
         });
         await hubConnection.StartAsync();
     }
