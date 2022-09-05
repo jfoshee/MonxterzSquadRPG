@@ -118,6 +118,7 @@
     const int TrainingTime = 10;
     const int RecoveryTime = 10 + 1; // Happens to match what is in Attack.js
     private string playerName = "...";
+    GameEntityState? user;
     List<CharacterViewModel> friendlies = new();
     List<CharacterViewModel> enemies = new();
     CharacterViewModel? selectedFriendly;
@@ -151,10 +152,7 @@
         hubConnection = new HubConnectionBuilder()
             .WithUrl(notificationsUrl)
             .Build();
-        hubConnection.On("ReceiveNotification", () =>
-        {
-            toastService.ShowInfo($"Notified from {notificationsUrl}", heading: "Something Changed");
-        });
+        hubConnection.On<string>("ReceiveNotification", RefreshEntity);
         await hubConnection.StartAsync();
     }
 
@@ -166,7 +164,7 @@
         {
             await game.InitAsync();
 
-            var user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
+            user = await gameStateClient.GetUserAsync() ?? throw new Exception("Failed to fetch current user entity");
             playerName = user.DisplayName ?? user.Id ?? "??";
 
             var allNearbyEntities = await gameStateClient.GetEntitiesNearbyAsync();
@@ -272,6 +270,33 @@
         {
             ShowError(apiException);
         }
+    }
+
+    async Task RefreshEntity(string entityId)
+    {
+        var entity = await this.gameStateClient.GetEntityAsync(entityId);
+        // If the entity has been deleted, do nothing... We don't support that yet...
+        if (entity is null)
+            return;
+        // Ignore updates that aren't to game characters
+        if (!BattleClient.IsCharacter(entity))
+            return;
+        // Can't handle if the user is not valid
+        if (user is null)
+            return;
+        var isFriendly = entity.SystemState.OwnerId == user.Id;
+        var characterViewModels = isFriendly ? friendlies : enemies;
+        var characterViewModel = characterViewModels.FirstOrDefault(cvm => cvm.Id == entityId);
+        // If not found, we have a new one
+        if (characterViewModel is null)
+        {
+            characterViewModels.Insert(0, new CharacterViewModel(entity));
+        }
+        else
+        {
+            characterViewModel.Entity = entity;
+        }
+        base.StateHasChanged();
     }
 
     private void ShowError(ApiException apiException)
