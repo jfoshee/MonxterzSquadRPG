@@ -14,7 +14,7 @@ export function mutate(context) {
   // Convert milliseconds to seconds
   // Rounding up to give benefit to slightly early status check
   const now = Math.ceil(Date.now() / 1000);
-  state.statusCheckTime = now;
+  // state.statusCheckTime = now;
   if (state.trainingEnd && state.trainingEnd <= now) {
     // Training is complete
     state.trainingStart = 
