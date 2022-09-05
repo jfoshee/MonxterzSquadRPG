@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager navigationManager;
 @inject IChangeUserService changeUserService;
 @inject IGameStateClient gameStateClient;
@@ -6,12 +7,31 @@
 @inject IToastService toastService;
 @inject ILocalStorageService localStorageService;
 @inject IGameBearerTokenProvider gameTokenProvider;
+@inject IConfiguration configuration;
+@inject ILogger<Index> logger;
 
 <PageTitle>Monxterz Squad RPG</PageTitle>
 
-<h1>Hello, @playerName!</h1>
-
 <div class="container">
+    <div class="row justify-content-between">
+        <div class="col">
+            <h1>Hello, @playerName!</h1>
+        </div>
+        <div class="col">
+            @if (IsConnected)
+            {
+                <span class="badge rounded-pill bg-success float-end" title="Connected">
+                    <span class="oi oi-audio"></span>
+                </span>
+            }
+            else
+            {
+                <span class="badge rounded-pill bg-danger float-end" title="Not Connected">
+                    <span class="oi oi-ban"></span>
+                </span>
+            }
+        </div>
+    </div>
     <div class="row">
         <div class="col">
             Attacker:
@@ -94,6 +114,7 @@
 
 @code
 {
+    private HubConnection? hubConnection;
     const int TrainingTime = 10;
     const int RecoveryTime = 10 + 1; // Happens to match what is in Attack.js
     private string playerName = "...";
@@ -101,6 +122,9 @@
     List<CharacterViewModel> enemies = new();
     CharacterViewModel? selectedFriendly;
     CharacterViewModel? selectedEnemy;
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
 
     bool CanTrain => selectedFriendly is not null
                      && !selectedFriendly.IsTraining
@@ -117,6 +141,21 @@
         var userId = await localStorageService.GetItemAsync<string>("UserID");
         // TODO: Break direct dependence on IGameBearerTokenProvider
         gameTokenProvider.SetBearerToken(userId, token);
+        // Connect to Change Notifications service
+        var notificationsUrl = configuration["NotificationsUrl"];
+        if (notificationsUrl is null)
+        {
+            logger.LogError("Config['NotificationsUrl'] is missing. Notifications will not work.");
+            return;
+        }
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(notificationsUrl)
+            .Build();
+        hubConnection.On("ReceiveNotification", () =>
+        {
+            toastService.ShowInfo($"Notified from {notificationsUrl}", heading: "Something Changed");
+        });
+        await hubConnection.StartAsync();
     }
 
     protected override async Task OnParametersSetAsync()
