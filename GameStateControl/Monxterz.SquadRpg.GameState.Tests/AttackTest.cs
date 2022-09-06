@@ -16,6 +16,7 @@ public class AttackTest
 
         // Enemy's hp should be reduced by the attacker's strength
         Assert.Equal(4, game.State(defender).hp);
+        Assert.Equal(attacker.Id, game.State(defender).attackedById);
     }
 
     [Theory(DisplayName = "Missing Attacked & Defender"), RpgTest]
