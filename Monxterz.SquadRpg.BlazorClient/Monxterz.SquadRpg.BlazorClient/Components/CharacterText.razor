@@ -1,0 +1,20 @@
+﻿@if (Character is not null)
+{
+    <span class="fw-bolder d-inline-block text-truncate align-text-top" style="max-width: 12em;">
+        @Character.DisplayName
+    </span>
+    <span class="d-inline-block align-text-top">
+        @Character.Stats
+    </span>
+    @if (Character.ShowSpinner)
+    {
+        <div class="spinner-grow spinner-grow-sm float-end" role="status"></div>
+    }
+    @if (Character.IsDead)
+    {
+        <span class="fs-6 float-end d-inline-block align-text-top">&#x1F480;</span>
+    }
+}
+@code {
+    [Parameter] public CharacterViewModel? Character { get; set; }
+}

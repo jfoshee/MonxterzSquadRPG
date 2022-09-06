@@ -56,7 +56,7 @@
             }
         </div>
         <div class="col">
-            Defender: @selectedEnemy?.DisplayName @selectedEnemy?.Stats
+            Defender: <CharacterText Character="@selectedEnemy" />
         </div>
     </div>
     <div class="row">
@@ -78,18 +78,7 @@
                 @foreach (var character in friendlies)
                 {
                     <button type="button" class="list-group-item list-group-item-action @active(character)" @onclick="() => selectedFriendly = character">
-                        <span class="fw-bolder">
-                            @character.DisplayName 
-                        </span>
-                        @character.Stats
-                        @if (character.ShowSpinner)
-                        {
-                            <div class="spinner-grow spinner-grow-sm float-end" role="status"></div>
-                        }
-                        @if (character.IsDead)
-                        {
-                            <span class="fs-6 float-end">&#x1F480;</span>
-                        }
+                        <CharacterText Character="@character" />
                     </button>
                 }
             </div>
@@ -102,21 +91,7 @@
                 @foreach (var character in enemies)
                 {
                     <button type="button" class="list-group-item list-group-item-action @active(character)" @onclick="() => selectedEnemy = character">
-                        <span class="fw-bolder">
-                            @character.DisplayName
-                        </span>
-                        @character.Stats
-                        <span class="badge bg-secondary">
-                            @character.OwnerName
-                        </span>
-                        @if (character.ShowSpinner)
-                        {
-                            <div class="spinner-grow spinner-grow-sm float-end" role="status"></div>
-                        }
-                        @if (character.IsDead)
-                        {
-                            <span class="fs-6 float-end">&#x1F480;</span>
-                        }
+                        <CharacterText Character="@character" />
                     </button>
                 }
             </div>
