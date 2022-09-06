@@ -20,4 +20,7 @@ public class CharacterViewModel
     public string Stats => $"Strength: {Strength}  HP: {Hp}";
     public bool IsTraining => Entity.GetPublicValue<bool>(GameMasterId, "isTraining");
     public bool IsRecovering => Entity.GetPublicValue<bool>(GameMasterId, "isRecovering");
+    public bool IsDead => Hp == 0;
+    public bool ShowSpinner => !IsDead && (IsTraining || IsRecovering);
+    public string OwnerName => Entity.SystemState.OwnerId;
 }
