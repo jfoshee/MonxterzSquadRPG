@@ -55,6 +55,26 @@ public class AttackTest
         Assert.Equal(0, game.State(defender).hp);
     }
 
+    [Theory(DisplayName = "Already Dead"), RpgTest]
+    public async Task AlreadyDead(IGameTestHarness game)
+    {
+        GameEntityState defender = await game.Create.Character();
+        await game.NewCurrentPlayer();
+        GameEntityState attacker = await game.Create.Character();
+        // Initialize attacker strength & defender hp
+        game.State(defender).hp = 0;
+        game.State(defender).attackedById = "expected";
+
+        await game.Call.Attack(attacker, defender);
+
+        // Enemy's hp should remain 0
+        Assert.Equal(0, game.State(defender).hp);
+        // Final attacked ID should not be replaced
+        Assert.Equal("expected", game.State(defender).attackedById);
+        // The attacker is not recovering (?)
+        Assert.False(game.State(attacker).isRecovering);
+    }
+
     [Theory(DisplayName = "Cannot Kill after Death"), RpgTest]
     public async Task CannotKillPostDeath(IGameTestHarness game)
     {
@@ -71,7 +91,7 @@ public class AttackTest
                   .ThrowAsync<ApiException>()
                   .WithMessage("*cannot attack*dead*");
 
-        // Enemy's hp not should be reduced 
+        // Enemy's hp not should be reduced
         Assert.Equal(25, game.State(defender).hp);
     }
 

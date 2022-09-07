@@ -9,7 +9,7 @@ export function mutate(context) {
   if (attackerEntity.systemState.ownerId != context.userId) {
     throw Error('The attacker character does not belong to the current Player. You cannot attack with another player\'s character.');
   }
-  if (attacker.hp <= 0) {
+  if (+attacker.hp <= 0) {
     throw Error('The character cannot attack when dead.');
   }
   if (attacker.isTraining) {
@@ -17,6 +17,11 @@ export function mutate(context) {
   }
   if (attacker.isRecovering) {
     throw Error('The character cannot attack while recovering.');
+  }
+  if (+defender.hp <= 0) {
+    // The character is already dead
+    defender.hp = 0;
+    return;
   }
   attacker.isRecovering = true;
   // Handle if recoveryTime is undefined by setting to default value
