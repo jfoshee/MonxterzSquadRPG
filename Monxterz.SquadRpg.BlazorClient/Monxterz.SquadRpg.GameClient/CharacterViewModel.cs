@@ -7,10 +7,12 @@ namespace Monxterz.SquadRpg.GameClient;
 public class CharacterViewModel
 {
     public GameEntityState Entity { get; set; }
+    private readonly Func<string?, GameEntityState?> lookupEntity;
 
-    public CharacterViewModel(GameEntityState entity)
+    public CharacterViewModel(GameEntityState entity, Func<string?, GameEntityState?> lookupEntity)
     {
         Entity = entity ?? throw new ArgumentNullException(nameof(entity));
+        this.lookupEntity = lookupEntity ?? throw new ArgumentNullException(nameof(lookupEntity));
     }
 
     public string Id => Entity.Id!;
@@ -22,5 +24,8 @@ public class CharacterViewModel
     public bool IsRecovering => Entity.GetPublicValue<bool>(GameMasterId, "isRecovering");
     public bool IsDead => Hp == 0;
     public bool ShowSpinner => !IsDead && (IsTraining || IsRecovering);
-    public string OwnerName => Entity.SystemState.OwnerId;
+    private string OwnerId => Entity.SystemState.OwnerId;
+    public string OwnerName => lookupEntity(OwnerId)?.DisplayName;
+    private string? AttackedById => Entity.GetPublicValue<string>(GameMasterId, "attackedById");
+    public string? AttackedBy => lookupEntity(AttackedById)?.DisplayName;
 }

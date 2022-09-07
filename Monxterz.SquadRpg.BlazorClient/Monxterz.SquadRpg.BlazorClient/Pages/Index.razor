@@ -91,7 +91,7 @@
                 @foreach (var character in enemies)
                 {
                     <button type="button" class="list-group-item list-group-item-action @active(character)" @onclick="() => selectedEnemy = character">
-                        <CharacterText Character="@character" />
+                        <CharacterText Character="@character" ShowOwner="true" />
                     </button>
                 }
             </div>
@@ -119,6 +119,7 @@
     List<CharacterViewModel> enemies = new();
     CharacterViewModel? selectedFriendly;
     CharacterViewModel? selectedEnemy;
+    Dictionary<string, GameEntityState> entityCache = new();
 
     public bool IsConnected =>
         hubConnection?.State == HubConnectionState.Connected;
@@ -164,6 +165,7 @@
             playerName = user.DisplayName ?? user.Id ?? "??";
 
             var allNearbyEntities = await gameStateClient.GetEntitiesNearbyAsync();
+            entityCache = allNearbyEntities.ToDictionary(e => e.Id!);
             var allNearbyCharacters = allNearbyEntities!.Where(BattleClient.IsCharacter);
             friendlies = ToCharacterViewModels(allNearbyCharacters, e => e.SystemState.OwnerId == user.Id);
             enemies = ToCharacterViewModels(allNearbyCharacters, e => e.SystemState.OwnerId != user.Id);
@@ -180,12 +182,19 @@
         }
     }
 
+    private GameEntityState? LookupEntity(string? id) 
+    {
+        if (id is null) 
+            return null;
+        return entityCache.GetValueOrDefault(id);
+    }
+
     private async Task NewCharacter()
     {
         try
         {
-            var character = await game.Create.Character();
-            friendlies.Insert(0, new CharacterViewModel(character));
+            GameEntityState character = await game.Create.Character();
+            friendlies.Insert(0, new CharacterViewModel(character, LookupEntity));
         }
         catch (ApiException apiException)
         {
@@ -202,7 +211,7 @@
             await game.Call.Attack(selectedFriendly.Entity, selectedEnemy.Entity);
             // HACK: Refresh enemy in view
             var index = enemies.IndexOf(selectedEnemy);
-            enemies[index] = selectedEnemy = new CharacterViewModel(selectedEnemy.Entity);
+            enemies[index] = selectedEnemy = new CharacterViewModel(selectedEnemy.Entity, LookupEntity);
             // HACK: Background task to check recovery after it is completed
             Task.Delay(RecoveryTime * 1000).ContinueWith(_ => CheckStatus(selectedFriendly));
         }
@@ -216,7 +225,7 @@
     {
         // Reversed so youngest first
         return entities.Where(predicate)
-                       .Select(entity => new CharacterViewModel(entity))
+                       .Select(entity => new CharacterViewModel(entity, LookupEntity))
                        .Reverse()
                        .ToList();
     }
@@ -288,7 +297,7 @@
         // If not found, we have a new one
         if (characterViewModel is null)
         {
-            characterViewModels.Insert(0, new CharacterViewModel(entity));
+            characterViewModels.Insert(0, new CharacterViewModel(entity, LookupEntity));
         }
         else
         {

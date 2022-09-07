@@ -6,6 +6,12 @@
     <span class="d-inline-block align-text-top">
         @Character.Stats
     </span>
+    @if (ShowOwner)
+    {
+        <span class="badge bg-secondary mx-2">
+            @Character.OwnerName
+        </span>
+    }
     @if (Character.ShowSpinner)
     {
         <div class="spinner-grow spinner-grow-sm float-end" role="status"></div>
@@ -14,7 +20,14 @@
     {
         <span class="fs-6 float-end d-inline-block align-text-top">&#x1F480;</span>
     }
+    @if (Character.AttackedBy is not null)
+    {
+        <span class="badge bg-danger mx-2" title="Attacked By">
+            &#128165; @Character.AttackedBy
+        </span>
+    }
 }
 @code {
+    [Parameter] public bool ShowOwner { get; set; }
     [Parameter] public CharacterViewModel? Character { get; set; }
 }
