@@ -188,7 +188,8 @@
         if (firstRender)
         {
             // Request permission to show OS notifications
-            await notificationService.RequestPermissionAsync();
+            if (await notificationService.IsSupportedByBrowserAsync())
+                await notificationService.RequestPermissionAsync();
         }
     }
 
