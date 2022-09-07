@@ -1,3 +1,4 @@
+using Append.Blazor.Notifications;
 using Blazored.LocalStorage;
 using Blazored.Toast;
 using Microsoft.AspNetCore.Components.Web;
@@ -12,5 +13,6 @@ var baseUrl = builder.Configuration["ApiBaseUrl"] ?? builder.HostEnvironment.Bas
 builder.Services.AddMonxterzSquad(baseUrl);
 builder.Services.AddBlazoredToast();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddNotifications();
 
 await builder.Build().RunAsync();

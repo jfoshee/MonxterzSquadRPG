@@ -6,6 +6,7 @@
 @inject IGameTestHarness game;
 @inject IToastService toastService;
 @inject ILocalStorageService localStorageService;
+@inject INotificationService notificationService
 @inject IGameBearerTokenProvider gameTokenProvider;
 @inject IConfiguration configuration;
 @inject ILogger<Index> logger;
@@ -182,6 +183,15 @@
         }
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Request permission to show OS notifications
+            await notificationService.RequestPermissionAsync();
+        }
+    }
+
     private GameEntityState? LookupEntity(string? id) 
     {
         if (id is null) 
@@ -238,6 +248,7 @@
     bool showRenameDialog = false;
     void CloseRenameDialog() => showRenameDialog = false;
     void ShowRenameDialog() => showRenameDialog = true;
+
     async Task RenameCharacter(string newDisplayName)
     {
         try
@@ -281,10 +292,13 @@
 
     async Task RefreshEntity(string entityId)
     {
+        // TODO: Perf: don't need to fetch the entity if we initiated the action and already have the latest
         var entity = await this.gameStateClient.GetEntityAsync(entityId);
         // If the entity has been deleted, do nothing... We don't support that yet...
-        if (entity is null)
+        if (entity?.Id is null)
             return;
+        // Update local cache entry (applies to users and characters)
+        entityCache[entity.Id] = entity;
         // Ignore updates that aren't to game characters
         if (!BattleClient.IsCharacter(entity))
             return;
@@ -301,7 +315,26 @@
         }
         else
         {
-            characterViewModel.Entity = entity;
+            if (isFriendly)
+            {
+                // Notify if we were attacked
+                var initialHp = characterViewModel.Hp;
+                characterViewModel.Entity = entity;
+                var newHp = characterViewModel.Hp;
+                if (newHp < initialHp)
+                {
+                    var defender = characterViewModel.DisplayName;
+                    var attacker = characterViewModel.AttackedBy;
+                    var act = newHp == 0 ? "killed" : "attacked";
+                    var message = $"{defender} was {act} by {attacker}!";
+                    toastService.ShowWarning(message);
+                    await notificationService.CreateAsync("You were attacked!", message);
+                }
+            }
+            else
+            {
+                characterViewModel.Entity = entity;
+            }
         }
         base.StateHasChanged();
     }
