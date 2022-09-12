@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monxterz.StatePlatform.Clie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monxterz.StatePlatform.ClientServices", "..\..\Monxterz.StatePlatform\Monxterz.StatePlatform.ClientServices\Monxterz.StatePlatform.ClientServices.csproj", "{8BB2ECAC-E896-40F9-B30A-89C56D7C2913}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monxterz.StatePlatform.ClientUtilities", "..\..\Monxterz.StatePlatform\Monxterz.StatePlatform.ClientUtilities\Monxterz.StatePlatform.ClientUtilities.csproj", "{7288C1A3-136C-4CA4-ABDD-1BA9B86C634E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,10 +38,6 @@ Global
 		{8BB2ECAC-E896-40F9-B30A-89C56D7C2913}.ProjectReferences|Any CPU.ActiveCfg = Debug|Any CPU
 		{8BB2ECAC-E896-40F9-B30A-89C56D7C2913}.ProjectReferences|Any CPU.Build.0 = Debug|Any CPU
 		{8BB2ECAC-E896-40F9-B30A-89C56D7C2913}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7288C1A3-136C-4CA4-ABDD-1BA9B86C634E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7288C1A3-136C-4CA4-ABDD-1BA9B86C634E}.ProjectReferences|Any CPU.ActiveCfg = Debug|Any CPU
-		{7288C1A3-136C-4CA4-ABDD-1BA9B86C634E}.ProjectReferences|Any CPU.Build.0 = Debug|Any CPU
-		{7288C1A3-136C-4CA4-ABDD-1BA9B86C634E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
